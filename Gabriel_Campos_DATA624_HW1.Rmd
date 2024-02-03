@@ -1,0 +1,50 @@
+---
+title: 'DATA 624: PREDICTIVE ANALYTICS'
+author: "Gabriel Campos"
+date: "Last edited `r format(Sys.time(), '%B %d, %Y')`"
+output:
+  pdf_document:
+    latex_engine: xelatex
+  geometry: left=0.5cm,right=0.5cm,top=1cm,bottom=2cm
+  html_document:
+    df_print: paged
+  html_notebook: default
+urlcolor: blue
+---
+
+# INSTRUCTIONS
+
+Please submit exercises 2.1, 2.2, 2.3, 2.4, 2.5 and 2.8 from the Hyndman online Forecasting book.  Please submit both your Rpubs link as well as attach the .pdf file with your code.
+
+1.  Use the help function to explore what the series gold, woolyrnq and gas represent.
+    Use `autoplot()` to plot each of these in separate plots.
+    What is the frequency of each series? Hint: apply the frequency() function.
+    Use which.max() to spot the outlier in the gold series. Which observation was it?
+    
+2.  Download the file `tute1.csv` from the book website, open it in Excel (or some other spreadsheet application), and review its contents. You should find four columns of information. Columns B through D each        contain a quarterly series, labelled Sales, AdBudget and GDP. Sales contains the quarterly sales for a small company over the period 1981-2005. AdBudget is the advertising budget and GDP is the gross domestic     product. All series have been adjusted for inflation.
+a.  You can read the data into R with the following script:
+
+```{r}
+
+tute1 <- read.csv("tute1.csv", header=TRUE)
+View(tute1)
+
+```
+
+b. Convert the data to time series
+
+```{r}
+mytimeseries <- ts(tute1[,-1], start=1981, frequency=4)
+```
+
+
+(The [,-1] removes the first column which contains the quarters as we don’t need them now.)
+
+c. Construct time series plots of each of the three series
+
+```{r}
+autoplot(mytimeseries, facets=TRUE)
+```
+
+
+Check what happens when you don’t include facets=TRUE.
