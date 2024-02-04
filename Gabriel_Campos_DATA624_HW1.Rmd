@@ -12,6 +12,13 @@ output:
 urlcolor: blue
 ---
 
+```{r}
+library('ggplot2')
+library('forecast')
+library('quantmod')
+```
+
+
 # INSTRUCTIONS
 
 Please submit exercises 2.1, 2.2, 2.3, 2.4, 2.5 and 2.8 from the Hyndman online Forecasting book.  Please submit both your Rpubs link as well as attach the .pdf file with your code.
@@ -21,13 +28,76 @@ Please submit exercises 2.1, 2.2, 2.3, 2.4, 2.5 and 2.8 from the Hyndman online 
     What is the frequency of each series? Hint: apply the frequency() function.
     Use which.max() to spot the outlier in the gold series. Which observation was it?
     
-2.  Download the file `tute1.csv` from the book website, open it in Excel (or some other spreadsheet application), and review its contents. You should find four columns of information. Columns B through D each        contain a quarterly series, labelled Sales, AdBudget and GDP. Sales contains the quarterly sales for a small company over the period 1981-2005. AdBudget is the advertising budget and GDP is the gross domestic     product. All series have been adjusted for inflation.
-a.  You can read the data into R with the following script:
+```{r}
+gld_frq<-frequency(gold)
+gld_max<-which.max(gold)
+
+autoplot(gold)+
+  ggtitle(paste("Gold Time Series | Frequency:",gld_frq))+
+   annotate("text", x = gld_max, y = gold[gld_max], 
+           label = paste("Outlier at index", gld_max), vjust = -0.5)
+  
+```
+
+```{r}
+# help(woolyrnq)
+head(woolyrnq,30)
+```
+
 
 ```{r}
 
-tute1 <- read.csv("tute1.csv", header=TRUE)
-View(tute1)
+wlyrnq_freq <- frequency(woolyrnq)
+wlyrnq_max <- which.max(woolyrnq)
+
+
+# use ts() b/c data as per Forecasting: Principles and Practice 2.1 ts object
+# e.g. y <- ts(z, start=2003, frequency=12)
+
+autoplot(ts(woolyrnq, frequency = wlyrnq_freq)) +
+  ggtitle(paste("woolyrnq Time Series Plot | Frequency =", wlyrnq_freq," ")) +
+   ylab("woolyrn (quarterly)") + 
+  annotate("text", x = wlyrnq_max, y = woolyrnq[wlyrnq_max], 
+           label = paste("Outlier at index", wlyrnq_max), vjust = -0.5)
+```
+
+```{r}
+#help(gas)
+head(gas,100)
+```
+
+
+```{r}
+#autoplot(gas)
+gas_freq <- frequency(gas)
+gas_max <- which.max(gas)
+
+# use ts() b/c data as per Forecasting: Principles and Practice 2.1 ts object
+# e.g. y <- ts(z, start=2003, frequency=12)
+
+autoplot(ts(gas, frequency = gas_freq)) +
+  ggtitle(paste("gas Time Series Plot | Frequency =", gas_freq,)) 
+```
+    
+
+
+
+    
+    
+2.  Download the file `tute1.csv` from the book website, open it in Excel (or some other spreadsheet application), and review its contents. You should find four columns of information. Columns B through D each        contain a quarterly series, labelled Sales, AdBudget and GDP. Sales contains the quarterly sales for a small company over the period 1981-2005. AdBudget is the advertising budget and GDP is the gross domestic     product. All series have been adjusted for inflation.
+a.  You can read the data into R with the following script:
+
+```{r, echo=FALSE, message=FALSE}
+url<-"https://raw.githubusercontent.com/GitableGabe/Data624_Data/main/"
+csv_file<-"tute1.csv"
+tute1_csv<-paste(url,csv_file, sep="")
+```
+
+
+```{r}
+
+tute1 <- read.csv(tute1_csv, header=TRUE)
+head(tute1,10)
 
 ```
 
@@ -46,5 +116,11 @@ c. Construct time series plots of each of the three series
 autoplot(mytimeseries, facets=TRUE)
 ```
 
-
 Check what happens when you don’t include facets=TRUE.
+
+*ANSWER*
+
+```{r}
+autoplot(mytimeseries)
+```
+
