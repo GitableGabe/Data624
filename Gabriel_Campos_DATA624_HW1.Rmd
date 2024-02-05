@@ -17,6 +17,7 @@ library('fpp3')
 library('tsibble')
 library('ggplot2')
 library('USgas')
+library('readr')
 ```
 
 
@@ -180,4 +181,112 @@ colnames(gafa_stock)
 
 
 # 2.3
+
+Download the file `tute1.csv` from the [book website](https://bit.ly/fpptute1), open it in Excel (or some other spreadsheet application), and review its contents. You should find four columns of information. Columns B through D each contain a quarterly series, labelled Sales, AdBudget and GDP. Sales contains the quarterly sales for a small company over the period 1981-2005. AdBudget is the advertising budget and GDP is the gross domestic product. All series have been adjusted for inflation.
+
+```{r, echo=FALSE}
+tute1_csv<-"https://raw.githubusercontent.com/GitableGabe/Data624_Data/main/tute1.csv"
+```
+
+## a.
+
+You can read the data into R with the following script:
+
+```{r, message=FALSE}
+
+df_tute1 <- readr::read_csv(tute1_csv)
+head(df_tute1,20)
+
+```
+
+## b.
+
+Convert the data to time series
+
+```{r}
+mytimeseries <- df_tute1 |>
+  mutate(Quarter = yearquarter(Quarter)) |>
+  as_tsibble(index = Quarter)
+```
+
+## c.
+
+Construct time series plots of each of the three series
+
+```{r}
+mytimeseries |>
+  pivot_longer(-Quarter) |>
+  ggplot(aes(x = Quarter, y = value, colour = name)) +
+  geom_line() +
+  facet_grid(name ~ ., scales = "free_y")
+```
+
+```{r}
+mytimeseries %>%
+  pivot_longer(-Quarter)%>%
+  ggplot(aes(x = Quarter, y = value, colour = name)) +
+  geom_line() #+
+  # facet_grid(name ~ ., scales = "free_y")
+```
+
+The plot is encompassed in one plot without the `facet_grid()` function.
+
+# 2.4
+
+The `USgas` package contains data on the demand for natural gas in the US.
+
+i. Install the `USgas` package.
+ii. Create a `tsibble` from `us_total` with year as the index and state as the key.
+iii. Plot the annual natural gas consumption by state for the New England area (comprising the states of Maine, Vermont, New Hampshire, Massachusetts, Connecticut and Rhode Island).
+
+## i
+```{r}
+str(USgas::us_total)
+```
+
+## ii
+**Example**
+
+[Forecasting Principles & Practice: 2.1 tsibble objects](https://youtu.be/EwjvA2OcdHs?si=ytUhCrsw_IhPO1oY&t=316)
+
+*Template*
+        
+        mydata <- tsibble(
+            year = 2015:2019,
+            y=c(123,39,78,52,110),
+            index = year
+        )
+        mydata
+
+```{r}
+
+mydata <- tsibble(
+  state = us_total$state,
+  year = us_total$year,
+  value = us_total$y,
+  index = year,
+  key = state
+)%>%
+  filter(state %in% c("Maine", "Vermont", "New Hampshire", "Massachusetts", "Connecticut", "Rhode Island"))
+
+```
+## iii
+
+```{r}
+
+ggplot(mydata, aes(x = year, y = value, color = state)) +
+  geom_line() +
+  labs(
+    title = "Annual Natural Gas Consumption for New England Area (by state)",
+    x = "Year",
+    y = "Natural Gas Consumption",
+    color = "State"
+  )
+```
+
+# 2.5
+
+```{r}
+
+```
 
