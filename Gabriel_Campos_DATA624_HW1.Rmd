@@ -13,9 +13,10 @@ urlcolor: blue
 ---
 
 ```{r, message=FALSE, warning=FALSE}
+library('fpp3')
+library('tsibble')
 library('ggplot2')
-library('forecast')
-library('quantmod')
+library('USgas')
 ```
 
 
@@ -23,136 +24,160 @@ library('quantmod')
 
 Please submit exercises 2.1, 2.2, 2.3, 2.4, 2.5 and 2.8 from the Hyndman online Forecasting book.  Please submit both your Rpubs link as well as attach the .pdf file with your code.
 
-1.  Use the help function to explore what the series gold, woolyrnq and gas represent.
-    Use `autoplot()` to plot each of these in separate plots.
-    What is the frequency of each series? Hint: apply the frequency() function.
-    Use which.max() to spot the outlier in the gold series. Which observation was it?
+#2.1
+
+1.  Explore the following four time series: `Bricks` from `aus_production`, `Lynx` from `pelt`, `Close` from `gafa_stock`, `Demand` from `vic_elec`.
+
+    i. Use ? (or help()) to find out about the data in each series.
+    ii. What is the time interval of each series?
+    iii. Use autoplot() to produce a time plot of each series.
+    iv. For the last plot, modify the axis labels and title.
+    
     
 ```{r}
-gld_frq<-frequency(gold)
-gld_max<-which.max(gold)
-
-autoplot(gold)+
-  ggtitle(paste("Gold Time Series | Frequency:",gld_frq))+
-   annotate("text", x = gld_max, y = gold[gld_max], 
-           label = paste("Outlier at index", gld_max), vjust = -0.5)
-  
+data("aus_production")
+data("pelt")
+data("gafa_stock")
+data("vic_elec")
 ```
+
+## Bricks
+
+### i
+
+*Details*
+Quarterly estimates of selected indicators of manufacturing production in Australia.
+
+*Bricks:*	Clay brick production in millions of bricks.
+
+### ii
+
+Quarterly
 
 ```{r}
-# help(woolyrnq)
-head(woolyrnq,30)
+aus_production%>%
+  select(Bricks)
 ```
-
+### iii
 
 ```{r}
-
-wlyrnq_freq <- frequency(woolyrnq)
-wlyrnq_max <- which.max(woolyrnq)
-
-
-# use ts() b/c data as per Forecasting: Principles and Practice 2.1 ts object
-# e.g. y <- ts(z, start=2003, frequency=12)
-
-autoplot(ts(woolyrnq, frequency = wlyrnq_freq)) +
-  ggtitle(paste("woolyrnq Time Series Plot | Frequency =", wlyrnq_freq," ")) +
-   ylab("woolyrn (quarterly)") + 
-  annotate("text", x = wlyrnq_max, y = woolyrnq[wlyrnq_max], 
-           label = paste("Outlier at index", wlyrnq_max), vjust = -0.5)
+autoplot(aus_production,Bricks) +
+  labs(title = "Time Plot of Bricks Series",
+       x = "Quarterly",
+       y = "Bricks Production count")
 ```
+## Lynx
+
+### i
+
+pelt is an annual tsibble with two values:
+
+Hare:	The number of Snowshoe Hare pelts traded.
+Lynx:	The number of Canadian Lynx pelts traded.
+
+### ii
 
 ```{r}
-#help(gas)
-head(gas,100)
+pelt %>%
+  select(Lynx)
 ```
 
-
-```{r}
-#autoplot(gas)
-gas_freq <- frequency(gas)
-gas_max <- which.max(gas)
-
-# use ts() b/c data as per Forecasting: Principles and Practice 2.1 ts object
-# e.g. y <- ts(z, start=2003, frequency=12)
-
-autoplot(ts(gas, frequency = gas_freq)) +
-  ggtitle(paste("gas Time Series Plot | Frequency =", gas_freq," |Gas = ", gas_max)) 
-```
-
-2.  Download the file `tute1.csv` from the book website, open it in Excel (or some other spreadsheet application), and review its contents. You should find four columns of information. Columns B through D each        contain a quarterly series, labelled Sales, AdBudget and GDP. Sales contains the quarterly sales for a small company over the period 1981-2005. AdBudget is the advertising budget and GDP is the gross domestic     product. All series have been adjusted for inflation.
-a.  You can read the data into R with the following script:
-
-```{r, echo=FALSE, message=FALSE}
-url<-"https://raw.githubusercontent.com/GitableGabe/Data624_Data/main/"
-csv_file<-"tute1.csv"
-tute1_csv<-paste(url,csv_file, sep="")
-```
-
+### iii
 
 ```{r}
 
-tute1 <- read.csv(tute1_csv, header=TRUE)
-head(tute1,10)
+autoplot(pelt,Lynx) +
+  labs(title = "Time Plot of lynx Series (1845 to1935)",
+       x = "Annually",
+       y = "Lynx pelts traded Count")
 
 ```
 
-b. Convert the data to time series
+## Close
+
+### i
+
+Details
+gafa_stock is a tsibble containing data on irregular trading days:
+
+Open:	The opening price for the stock.
+High:	The stock's highest trading price.
+Low:	The stock's lowest trading price.
+Close:	The closing price for the stock.
+Adj_Close:	The adjusted closing price for the stock.
+Volume:	The amount of stock traded.
+Each stock is uniquely identified by one key:
+
+Symbol:	The ticker symbol for the stock.
+
+### ii
 
 ```{r}
-mytimeseries <- ts(tute1[,-1], start=1981, frequency=4)
+gafa_stock%>%
+  select(Close)
 ```
 
+The `gafa_stock` is daily data
 
-(The [,-1] removes the first column which contains the quarters as we don’t need them now.)
-
-c. Construct time series plots of each of the three series
-
-```{r}
-autoplot(mytimeseries, facets=TRUE)
-```
-
-Check what happens when you don’t include facets=TRUE.
-
-*ANSWER*
-
-```{r}
-autoplot(mytimeseries, facets=FALSE)
-```
-
-3. Download some monthly Australian retail data from the book website. These represent retail sales in various categories for different Australian states, and are stored in a MS-Excel file.
-
-a. You can read the data into R with the following script:
-
-```{r}
-
-#retaildata <- readxl::read_excel("retail.xlsx", skip=1)
-
-```
-
-The second argument (skip=1) is required because the Excel sheet has two header rows.
-
-b. Select one of the time series as follows (but replace the column name with your own chosen column):
+### iii
 
 ```{r}
 
+autoplot(gafa_stock,Close) +
+  labs(title = "Time Plot of Closing Stock Price ('Yahoo Finance' 2014-2018)",
+       x = "Daily",
+       y = "Closing price")
+
 ```
 
-Explore your chosen retail time series using the following functions:
+## Demand
 
-`autoplot()`, `ggseasonplot()`, `ggsubseriesplot()`, `gglagplot()`, `ggAcf()`
+### i
 
-Can you spot any seasonality, cyclicity and trend? What do you learn about the series?
+**Description***
 
-Create time plots of the following time series: `bicoal`, `chicken`, `dole`, `usdeaths`, `lynx`, `goog`, `writing`, `fancy`, `a10`, `h02`.
+`vic_elec` is a half-hourly `tsibble` with three values:
+
+Demand:	Total electricity demand in MWh.
+Temperature:	Temperature of Melbourne (BOM site 086071).
+Holiday:	Indicator for if that day is a public holiday.
+
+### ii
+
+```{r}
+
+vic_elec %>%
+  select(Demand)
+
+```
 
 
+### iii & vi
+
+```{r}
+autoplot(vic_elec,Demand) +
+  labs(title = "Time Plot of Electricity Demand Victoria, Australia",
+       x = "Time(30min Intervals",
+       y = "Demand in MWh")
+```
+
+# 2.2
+
+Use filter() to find what days corresponded to the peak closing price for each of the four stocks in gafa_stock.
 
 
+```{r}
+colnames(gafa_stock)
+```
+
+```{r}
+
+ gafa_stock %>%
+  group_by(Symbol) %>%
+  filter(Close == max(Close))
+
+```
 
 
-
-
-
-
-
+# 2.3
 
