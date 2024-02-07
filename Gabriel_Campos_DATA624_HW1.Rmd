@@ -3,12 +3,12 @@ title: 'DATA 624: PREDICTIVE ANALYTICS'
 author: "Gabriel Campos"
 date: "Last edited `r format(Sys.time(), '%B %d, %Y')`"
 output:
-  pdf_document:
-    latex_engine: xelatex
+  html_notebook: default
   geometry: left=0.5cm,right=0.5cm,top=1cm,bottom=2cm
   html_document:
     df_print: paged
-  html_notebook: default
+  pdf_document:
+    latex_engine: xelatex
 urlcolor: blue
 ---
 
@@ -18,6 +18,7 @@ library('tsibble')
 library('ggplot2')
 library('USgas')
 library('readr')
+library('zoo')
 ```
 
 
@@ -25,7 +26,7 @@ library('readr')
 
 Please submit exercises 2.1, 2.2, 2.3, 2.4, 2.5 and 2.8 from the Hyndman online Forecasting book.  Please submit both your Rpubs link as well as attach the .pdf file with your code.
 
-#2.1
+# 2.1
 
 1.  Explore the following four time series: `Bricks` from `aus_production`, `Lynx` from `pelt`, `Close` from `gafa_stock`, `Demand` from `vic_elec`.
 
@@ -67,6 +68,7 @@ autoplot(aus_production,Bricks) +
        x = "Quarterly",
        y = "Bricks Production count")
 ```
+
 ## Lynx
 
 ### i
@@ -270,6 +272,7 @@ mydata <- tsibble(
   filter(state %in% c("Maine", "Vermont", "New Hampshire", "Massachusetts", "Connecticut", "Rhode Island"))
 
 ```
+
 ## iii
 
 ```{r}
@@ -286,7 +289,356 @@ ggplot(mydata, aes(x = year, y = value, color = state)) +
 
 # 2.5
 
+## a. 
+
+Download `tourism.xlsx` from the [book website](https://bit.ly/fpptourism) and read it into R using `readxl::read_excel()`.
+
 ```{r}
+PATH<-"C:/Users/Lenny/Documents/GitableGabe/Data624_Data/"
+```
+
+
+```{r}
+tourism_str <- paste(PATH,"tourism.xlsx", sep = "")
+df_tourism <- readxl::read_excel(tourism_str)
+rm(tourism_str)
+tourism
+```
+
+
+
+## b.
+
+Create a `tsibble` which is identical to the tourism `tsibble` from the `tsibble` package.
+
+```{r}
+str(df_tourism)
+```
+
+**Example**
+
+[Forecasting Principles & Practice: 2.1 tsibble objects](https://youtu.be/EwjvA2OcdHs?si=tg-wW4OOR3qln05l&t=661)
+
+*Template*
+
+      prison<- read::read_csv("data/prison_population.csv") %>%
+                mutate(Quarter = yearquarter(date)) %>%
+                  select(-date) %>%
+                  as_tsibble(
+                  index = Quarter,
+                  key=c(state,gender,legal,indigenous)
+                  )
+
+
+```{r}
+tibble_tourism <- df_tourism %>%
+  mutate(Quarter = yearquarter(Quarter)) %>%
+  as_tsibble(index=Quarter,
+             key = c("Region", "State", "Purpose"))
+
+tibble_tourism
 
 ```
 
+## c.
+
+Find what combination of Region and Purpose had the maximum number of overnight trips on average.
+
+```{r}
+
+tibble_tourism %>% 
+  group_by(Region,Purpose)%>%
+  summarize(TripsAvg = mean(Trips))%>%
+  filter(TripsAvg == max(TripsAvg))%>%
+  arrange(desc(TripsAvg))
+
+```
+
+
+
+## d.
+
+Create a new `tsibble` which combines the Purposes and Regions, and just has total trips by State.
+
+
+```{r}
+tibble_tourism_v2 <- tibble_tourism %>%
+  group_by(State)%>%
+  summarize(Total=sum(Trips))
+
+tibble_tourism_v2
+```
+
+# 2.8
+
+Use the following graphics functions: `autoplot()`, `gg_season()`, `gg_subseries()`, `gg_lag()`, `ACF()` and explore features from the following time series: “Total Private” `Employed` from `us_employment`, `Bricks` from `aus_production`, `Hare` from `pelt`, “H02” `Cost` from `PBS`, and `Barrels` from `us_gasoline`.
+
+i. Can you spot any seasonality, cyclicity and trend?
+ii. What do you learn about the series?
+iii. What can you say about the seasonal patterns?
+iv. Can you identify any unusual years?
+
+## Total Private
+
+**Example**
+
+      vic_elec |> gg_season(Demand, period = "day") +
+        theme(legend.position = "none") +
+        labs(y="MWh", title="Electricity demand: Victoria")
+
+```{r}
+us_employment
+```
+
+
+```{r}
+us_employment%>%
+  filter(Title=="Total Private")%>%
+  autoplot(Employed,period="month") 
+
+us_employment%>%
+  filter(Title=="Total Private")%>%
+  gg_season(Employed, polar = FALSE)
+
+us_employment%>%
+  filter(Title=="Total Private")%>%
+  gg_season(Employed, polar = TRUE) 
+
+us_employment%>%
+  filter(Title=="Total Private")%>%
+  gg_subseries(Employed)
+
+us_employment%>%
+  filter(Title=="Total Private")%>%
+  gg_lag(Employed)
+
+```
+
+```{r}
+us_employment%>%
+  filter(Title=="Total Private")%>%
+  ACF(us_employment$Employed)%>%
+  autoplot()
+```
+
+### i
+
+There is a clear upwards trend in small increments for the data.
+
+### ii
+
+Growth has been consistent without any extreme spike or drop.
+
+### iii
+
+No Seasonality is noted indicating there is not particular season with an affect on employment positive or negative.
+
+### iv
+
+A small dip around 2010 which I believe aligns with the recession.
+
+## Bricks
+
+```{r}
+aus_production
+```
+
+
+```{r}
+aus_production%>%
+  select(Bricks)%>%
+  autoplot(period="quarter") 
+
+aus_production%>%
+  select(Bricks)%>%
+  gg_season( polar = FALSE)
+
+aus_production%>%
+  select(Bricks)%>%
+  gg_season( polar = TRUE) 
+ 
+aus_production%>%
+  select(Bricks)%>%
+  gg_subseries()
+
+aus_production%>%
+  select(Bricks)%>%
+  gg_lag()
+
+```
+
+```{r}
+aus_production%>%
+  select(Bricks)%>%
+  ACF(aus_production$Bricks)%>%
+  autoplot()
+```
+
+### i
+
+There is lots of cyclicity with frequent spikes and dips, but it does not appear to be consistent to a time period.There is a positive upward trend in the long term.
+
+### ii
+
+The data being broken down to Quarters my influence how well we can assess the potential seasonality. As is, there does  seem to be one.
+
+### iii
+
+There seems to be some seasonality as far as Q1 and Q3 is concerned.
+
+### iv
+
+The early 1980s has a significant dip so I would be curious to understand what may have cause this.
+
+## Hare
+
+```{r}
+pelt
+```
+
+
+```{r}
+pelt%>%
+  select(Hare)%>%
+  autoplot(period="year") 
+
+#Not possible
+# pelt%>%
+#   select(Hare)%>%
+#   gg_season( polar = FALSE)
+# 
+# pelt%>%
+#   select(Hare)%>%
+#   gg_season( polar = TRUE) 
+ 
+pelt%>%
+  select(Hare)%>%
+  gg_subseries()
+
+pelt%>%
+  select(Hare)%>%
+  gg_lag()
+```
+```{r}
+pelt%>%
+  select(Hare)%>%
+  ACF()%>%
+  autoplot()
+```
+
+### i
+
+The data is definitely cyclical but its not possible to teal seasonality since its at a annual basis.
+
+### ii
+
+The data does not trend and varies a great deal. But seems to have a pattern at a 5 year interval.
+
+### iii
+
+Again no seasonality
+
+### iv
+
+Im curious what caused the peak in the early 1860s
+
+## Cost
+
+```{r}
+PBS
+```
+
+
+```{r}
+PBS%>%
+  filter(ATC2=="H02")%>%
+  autoplot(Cost) 
+
+PBS %>% 
+  filter(ATC2 == "H02") %>%
+  gg_season(Cost, polar = FALSE)
+
+PBS %>% 
+  filter(ATC2 == "H02") %>%
+  gg_subseries(Cost)
+
+# PBS %>% 
+#   filter(ATC2 == "H02") %>%
+#   gg_lag(Cost)
+
+```
+
+```{r}
+PBS %>% 
+  filter(ATC2 == "H02") %>%
+  ACF(Cost)%>%
+  autoplot()
+```
+
+### i 
+
+The data is hard to interpret but it appears to trend upwards with cyclicity and seasonality.
+### ii
+
+the data is very volatile but spikes mainly end of year it appears.
+
+### iii
+
+The seasonality is at the end of the year.
+
+### iv
+
+No year stands out, outside of the latest year having the highest cost.
+
+## Barrels
+
+```{r}
+us_gasoline
+```
+
+
+```{r}
+us_gasoline%>%
+  select(Barrels)%>%
+  autoplot() 
+
+us_gasoline%>%
+  select(Barrels)%>%
+  gg_season(polar = FALSE)
+
+us_gasoline%>%
+  select(Barrels)%>%
+  gg_season( polar = TRUE) 
+
+us_gasoline%>%
+  select(Barrels)%>%
+  gg_subseries()
+
+us_gasoline%>%
+  select(Barrels)%>%
+  gg_lag()
+
+```
+
+```{r}
+us_gasoline %>% 
+  select(Barrels) %>%
+  ACF()%>%
+  autoplot()
+```
+
+### i
+
+Primarily an upward trend with a dip near the most recent year
+
+### ii
+
+Its possible the barrels value is impacted by supply.
+
+### iii
+
+There does not appear to be seasonality of cyclicity
+
+### iv
+
+The most recent dip is interesting and I wonder if its just a data collection issue.
