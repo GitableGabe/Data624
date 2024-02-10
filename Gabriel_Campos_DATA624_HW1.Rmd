@@ -1,14 +1,14 @@
 ---
-title: 'DATA 624: PREDICTIVE ANALYTICS'
+title: 'DATA 624: PREDICTIVE ANALYTICS HW1'
 author: "Gabriel Campos"
 date: "Last edited `r format(Sys.time(), '%B %d, %Y')`"
 output:
-  html_notebook: default
+  pdf_document:
+    latex_engine: xelatex
   geometry: left=0.5cm,right=0.5cm,top=1cm,bottom=2cm
   html_document:
     df_print: paged
-  pdf_document:
-    latex_engine: xelatex
+  html_notebook: default
 urlcolor: blue
 ---
 
