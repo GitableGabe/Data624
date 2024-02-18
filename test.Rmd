@@ -1,0 +1,26 @@
+---
+title: 'DATA 624: PREDICTIVE ANALYTICS HW3'
+author: "Gabriel Campos"
+date: "Last edited `r format(Sys.time(), '%B %d, %Y')`"
+output:
+  pdf_document:
+    latex_engine: xelatex
+  geometry: left=0.5cm,right=0.5cm,top=1cm,bottom=2cm
+  html_document:
+    df_print: paged
+  html_notebook: default
+urlcolor: blue
+---
+
+# Instructions
+
+Do exercises 5.1, 5.2, 5.3, 5.4 and 5.7 in the Hyndman book.  Please submit your [Rpubs link](https://rpubs.com/gcampos100/DATA_624_HW3) as well as your .pdf file showing your run code.
+
+
+```{r, message=FALSE, warning=FALSE}
+library(dplyr)
+library(stringr)
+library(fpp3)
+library(cowplot)
+```
+
