@@ -1,0 +1,141 @@
+---
+title: 'DATA 624: PREDICTIVE ANALYTICS HW4'
+author: "Gabriel Campos"
+date: "Last edited `r format(Sys.time(), '%B %d, %Y')`"
+output:
+  html_notebook: default
+  geometry: left=0.5cm,right=0.5cm,top=1cm,bottom=2cm
+  html_document:
+    df_print: paged
+  pdf_document:
+    latex_engine: xelatex
+urlcolor: blue
+---
+
+```{r}
+library(mlbench)
+library(dplyr)
+library(ggplot2)
+library(tsibble)
+library(tidyr)
+library(corrplot)
+library(cowplot)
+library(psych)
+```
+
+
+# Instructions
+
+Do problems 3.1 and 3.2 in the Kuhn and Johnson book Applied Predictive Modeling.  Please submit your Rpubs link along with your .pdf for your run code.
+
+# 3.1
+
+The UC Irvine Machine Learning Repository6 contains a data set related
+to glass identification. The data consist of 214 glass samples labeled as one
+of seven class categories. There are nine predictors, including the refractive
+index and percentages of eight elements: Na, Mg, Al, Si, K, Ca, Ba, and Fe.
+The data can be accessed via:
+
+```{r}
+data(Glass)
+str(Glass)
+```
+## (a)
+
+Using visualizations, explore the predictor variables to understand their
+distributions as well as the relationships between predictors.
+
+
+```{r}
+Glass %>%
+  select(-10)%>%
+  gather() %>%
+  ggplot(aes(x=value))+
+  geom_histogram(fill="lightgreen")+
+  facet_wrap(~key,scales = "free")
+
+
+corrplot(cor(Glass%>%select(-10)),type="lower")
+
+Glass%>%
+  select("RI","Ca")%>%
+  ggplot(aes(x=RI,y=Ca))+
+  geom_point()+
+  geom_smooth(method="lm", se = FALSE,color="red")+
+  labs(x = "Refractive Index (RI)", y = "Calcium (Ca)", 
+       title = "RI vs Ca Scatterplot" )
+Glass%>%
+  select("RI","Mg")%>%
+  ggplot(aes(x=RI,y=Mg))+
+  geom_point()+
+  labs(x = "Refractive Index (RI)", y = "Magnesium (Mg)", 
+       title = "RI vs Mg Scatterplot" )
+
+```
+
+In order to make the plots `Type` was excluded, as the values were not numeric and did not provide any real insight if it were to be plotted.
+
+Noting the plots I can assess the following:
+
+* All plots with exception of `Mg` and `Si` appear to be right skewed to some degree
+* Of the right skewed properties `Ba` and `Fe` is centered around 0
+* `Ai` and `Ba` is the most centered
+* `RI` and `Ca` is shown to have the highest positive correlation while `RI` and `Mg` has the lowest.
+* none of the degrees of relationship seems prominent
+
+## (b)
+
+Do there appear to be any outliers in the data? Are any predictors skewed?
+
+```{r}
+Glass %>%
+  select(-10)%>%
+  gather() %>%
+  ggplot(aes(value))+
+  geom_boxplot()+
+  facet_wrap(~key,scales = "free")
+```
+
+All of the attribute except for `Mg` have outliers in the data.
+Skewness is shown below. As noted all have a degree of skewness, right and left skewness is described in (a) with `Ba` having the most notable degree.
+
+```{r}
+data.frame(describe(Glass))%>%
+                      select(skew)
+```
+
+
+## (c)
+
+Are there any relevant transformations of one or more predictors that
+might improve the classification model?
+
+# 3.2
+
+The soybean data can also be found at the UC Irvine Machine Learning
+Repository. Data were collected to predict disease in 683 soybeans. The 35
+predictors are mostly categorical and include information on the environmen￾tal conditions (e.g., temperature, precipitation) and plant conditions (e.g., left
+spots, mold growth). The outcome labels consist of 19 distinct classes.
+
+The data can be loaded via:
+
+```{r}
+data(Soybean)
+## See ?Soybean for details
+```
+
+## (a)
+
+Investigate the frequency distributions for the categorical predictors. Are
+any of the distributions degenerate in the ways discussed earlier in this
+chapter?
+
+## (b)
+
+Roughly 18 % of the data are missing. Are there particular predictors that
+are more likely to be missing? Is the pattern of missing data related to
+the classes?
+## (c) 
+
+Develop a strategy for handling missing data, either by eliminating
+predictors or imputation.
