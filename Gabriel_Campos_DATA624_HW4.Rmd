@@ -12,7 +12,7 @@ output:
 urlcolor: blue
 ---
 
-```{r}
+```{r, message=FALSE}
 library(mlbench)
 library(dplyr)
 library(ggplot2)
@@ -21,6 +21,10 @@ library(tidyr)
 library(corrplot)
 library(cowplot)
 library(psych)
+library(MASS)
+library(gridExtra)
+library(tidyr)
+
 ```
 
 
@@ -48,24 +52,24 @@ distributions as well as the relationships between predictors.
 
 ```{r}
 Glass %>%
-  select(-10)%>%
+  dplyr::select(-10)%>%
   gather() %>%
   ggplot(aes(x=value))+
   geom_histogram(fill="lightgreen")+
   facet_wrap(~key,scales = "free")
 
 
-corrplot(cor(Glass%>%select(-10)),type="lower")
+corrplot(cor(Glass%>%dplyr::select(-10)),type="lower")
 
 Glass%>%
-  select("RI","Ca")%>%
+  dplyr::select("RI","Ca")%>%
   ggplot(aes(x=RI,y=Ca))+
   geom_point()+
   geom_smooth(method="lm", se = FALSE,color="red")+
   labs(x = "Refractive Index (RI)", y = "Calcium (Ca)", 
        title = "RI vs Ca Scatterplot" )
 Glass%>%
-  select("RI","Mg")%>%
+  dplyr::select("RI","Mg")%>%
   ggplot(aes(x=RI,y=Mg))+
   geom_point()+
   labs(x = "Refractive Index (RI)", y = "Magnesium (Mg)", 
@@ -89,7 +93,7 @@ Do there appear to be any outliers in the data? Are any predictors skewed?
 
 ```{r}
 Glass %>%
-  select(-10)%>%
+  dplyr::select(-10)%>%
   gather() %>%
   ggplot(aes(value))+
   geom_boxplot()+
@@ -101,7 +105,7 @@ Skewness is shown below. As noted all have a degree of skewness, right and left 
 
 ```{r}
 data.frame(describe(Glass))%>%
-                      select(skew)
+                      dplyr::select(skew)
 ```
 
 
@@ -109,6 +113,72 @@ data.frame(describe(Glass))%>%
 
 Are there any relevant transformations of one or more predictors that
 might improve the classification model?
+
+```{r, warning=FALSE}
+df_glass<-Glass
+df_glass$log_Ba<-log(Glass$Ba)
+df_glass$log_Fe<-log(Glass$Fe)
+df_glass$log_K<-log(Glass$K)
+
+plot_Ba <- ggplot(df_glass, aes(x = log_Ba)) +
+  geom_histogram(bins = 20, fill = "darkblue",
+                 color = "black") +
+  labs(title = "Histogram of log-transformed Ba",
+       x = "log(Be)", y = "Frequency")
+
+plot_Fe<-ggplot(df_glass, aes(x = log_Fe)) +
+  geom_histogram(bins = 20, fill = "blue",
+                 color = "black") +
+  labs(title = "Histogram of log-transformed Fe",
+       x = "log(Be)", y = "Frequency")
+
+plot_K<-ggplot(df_glass, aes(x = log_K)) +
+  geom_histogram(bins = 20, fill = "lightblue",
+                 color = "black") +
+  labs(title = "Histogram of log-transformed K",
+       x = "log(Be)", y = "Frequency")
+
+plot_grid(plot_Ba,plot_Fe,plot_K, ncol = 3)
+
+```
+
+
+```{r}
+# Box-Cox transformation for specified columns
+df_glass_transformed <- df_glass
+
+# Columns for Box-Cox transformation
+columns <- c("RI", "Na", "Al", "Si", "Ca")
+
+for (col in columns) {
+  transformed_col <- boxcox(df_glass[[col]] ~ 1, plotit=FALSE)
+  lambda <- transformed_col$x[which.max(transformed_col$y)]
+  if (lambda == 0) {
+    df_glass_transformed[[paste0("boxcox_", col)]] <- log(df_glass[[col]])
+  } else {
+    df_glass_transformed[[paste0("boxcox_", col)]] <- (df_glass[[col]]^lambda - 1) / lambda
+  }
+}
+
+# Replace null values with 0
+df_glass_transformed[is.na(df_glass_transformed)] <- 0
+
+# Create ggplot visualizations for each transformed column
+plots <- list()
+for (col in paste0("boxcox_", columns)) {
+  plots[[col]] <- ggplot(df_glass_transformed, aes(x = !!sym(col))) +
+    geom_histogram(bins = 20, fill = "orange", color = "black") +
+    labs(title = paste("Histogram of", col), x = col, y = "Frequency")
+}
+
+# Arrange plots in columns of 3
+grid.arrange(grobs = plots, ncol = 3)
+
+```
+
+```{r}
+rm(list = ls(pattern = "(lambda|plot|glass|^col|col$)"))
+```
 
 # 3.2
 
@@ -130,12 +200,100 @@ Investigate the frequency distributions for the categorical predictors. Are
 any of the distributions degenerate in the ways discussed earlier in this
 chapter?
 
+```{r}
+str(Soybean)
+```
+
+```{r}
+df_soybean <- Soybean#%>%dplyr::select(-1)
+
+par(mfrow=c(2,2))
+for (col in 2:ncol(Soybean)) {
+    hist( as.numeric(Soybean[,col]),main =   colnames(Soybean)[col], xlab = colnames(Soybean)[col])
+}
+```
+
+```{r}
+# Function to count distinct numeric values, including NAs, in a column
+count_distinct_numeric <- function(column) {
+  n_distinct(na.omit(column))
+}
+
+# Apply the function to each column of the data frame 'B'
+distinct_counts <- sapply(Soybean, count_distinct_numeric)
+
+# Reorder distinct counts in ascending order
+distinct_counts <- distinct_counts[order(distinct_counts)]
+
+# Remove columns with NA counts from the print output
+distinct_counts <- distinct_counts[!is.na(distinct_counts)]
+
+# Print the distinct counts for each column
+print(distinct_counts)
+
+```
+
+The distribution of `mycelium` and `sclerotia` appears to be degenerate, considering the low frequency count and minimal distinct values. They are significantly less then the other attributes to where visually `mycelium` almost appeared to have just 1 value.
+
 ## (b)
 
 Roughly 18 % of the data are missing. Are there particular predictors that
 are more likely to be missing? Is the pattern of missing data related to
 the classes?
+
+```{r, fig.height=9}
+df_soybean%>%
+  summarise_all(list(~is.na(.))) %>%
+  pivot_longer(everything(), names_to = "variables", values_to = "missing") %>%
+  count(variables, missing) %>%
+  ggplot(aes(y = reorder(variables, n), x = n, fill = missing)) +
+  geom_col(position = "fill") +
+  geom_text(aes(label = ifelse(missing, "NA", "Non-NA")), 
+            position = position_fill(vjust = 0.5), 
+            color = "white", size = 4) +  # Add data labels
+  labs(title = "NA Proportion",
+       x = "Proportion") +
+  scale_fill_manual(values = c("grey", "darkgreen")) +
+  theme_minimal()
+```
+
+
+```{r}
+df_incomplete <- df_soybean[!complete.cases(df_soybean),]
+(df_incomplete %>%
+                group_by(Class) %>%
+                  tally())
+```
+
+```{r, fig.height=9}
+df_soybean%>%
+  filter(!Class %in% c("2-4-d-injury","cyst-nematode",
+                  "diaporthe-pod-&-stem-blight",
+                  "herbicide-injury","phytophthora-rot"))%>%
+  summarise_all(list(~is.na(.))) %>%
+  pivot_longer(everything(), 
+               names_to = "variables", 
+               values_to = "missing") %>%
+  count(variables, missing) %>%
+  ggplot(aes(y = reorder(variables, n), 
+             x = n, fill = missing)) +
+  geom_col(position = "fill") +
+  geom_text(aes(label = ifelse(missing, 
+                               "NA", "Non-NA")), 
+            position = position_fill(vjust = 0.5), 
+            color = "white", size = 4) +  # Add data labels
+  labs(title = "NA Proportion",
+       x = "Proportion") +
+  scale_fill_manual(values = c("grey", "darkgreen")) +
+  theme_minimal()
+```
+
+
+
 ## (c) 
 
 Develop a strategy for handling missing data, either by eliminating
 predictors or imputation.
+
+I wouldnt just remove the classes although its seems much easier to just do that.
+I would say replace with zero where it makes sense, for binary values like `hail` or `lodging` since it is more logical to defualt to "no" unless reason to believe otherwise. I say this assuming `hail`=yes likelihood being significantly smaller if presuming. For values like `severe` I'd much rather not put a value, unless an "unknown" metric is put in, as it's frequency is likely to be very low. For the remaining, I would likely want to get the frequency and substitute the categorical metric with its mode for normalization with box-cox, and see if it better fits the model we want to predict with.
