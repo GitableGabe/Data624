@@ -1,0 +1,393 @@
+---
+title: 'DATA 624: PREDICTIVE ANALYTICS Project 1'
+author: "Gabriel Campos"
+date: "Last edited `r format(Sys.time(), '%B %d, %Y')`"
+output:
+  html_notebook: default
+  geometry: left=0.5cm,right=0.5cm,top=1cm,bottom=2cm
+  html_document:
+    df_print: paged
+  pdf_document:
+    latex_engine: xelatex
+urlcolor: blue
+---
+
+```{r, message=FALSE}
+library(fpp3)
+library(dplyr)
+library(ggplot2)
+library(readxl)
+library(tsibble)
+library(psych)
+library(tidyr)
+library(forecast)
+```
+
+# Description
+ 
+This project consists of 3 parts - two required and one bonus and is worth 15% of your grade.  The project is due at 11:59 PM on Sunday Apr 11.  I will accept late submissions with a penalty until the meetup after that when we review some projects.
+
+## Part A 
+
+**ATM Forecast**
+[ATM624Data.xlsx](https://bbhosted.cuny.edu/bbcswebdav/pid-81630946-dt-content-rid-636012399_1/xid-636012399_1)
+ 
+In part A, I want you to forecast how much cash is taken out of 4 different ATM machines for May 2010.  The data is given in a single file.  The variable ‘Cash’ is provided in hundreds of dollars, other than that it is straight forward.   I am being somewhat ambiguous on purpose to make this have a little more business feeling.  Explain and demonstrate your process, techniques used and not used, and your actual forecast.  I am giving you data via an excel file, please provide your written report on your findings, visuals, discussion and your R code via an RPubs link along with the actual.rmd file  Also please submit the forecast which you will put in an Excel readable file.
+ 
+## Part B
+
+Forecasting Power
+[ResidentialCustomerForecastLoad-624.xlsx](https://bbhosted.cuny.edu/bbcswebdav/pid-81630947-dt-content-rid-636015207_1/xid-636015207_1)
+ 
+Part B consists of a simple dataset of residential power usage for January 1998 until December 2013.  Your assignment is to model these data and a monthly forecast for 2014.  The data is given in a single file.  The variable ‘KWH’ is power consumption in Kilowatt hours, the rest is straight forward.    Add this to your existing files above. 
+ 
+ 
+## Part C 
+
+BONUS, optional (part or all), [Waterflow_Pipe1.xlsx](https://bbhosted.cuny.edu/bbcswebdav/pid-81630948-dt-content-rid-636015213_1/xid-636015213_1) and [Waterflow_Pipe2.xlsx](https://bbhosted.cuny.edu/bbcswebdav/pid-81630949-dt-content-rid-636015214_1/xid-636015214_1)
+ 
+Part C consists of two data sets.  These are simple 2 columns sets, however they have different time stamps.  Your optional assignment is to time-base sequence the data and aggregate based on hour (example of what this looks like, follows).  Note for multiple recordings within an hour, take the mean.  Then to determine if the data is stationary and can it be forecast.  If so, provide a week forward forecast and present results via Rpubs and .rmd and the forecast in an Excel readable file.
+
+## Data Load
+
+https://github.com/GitableGabe/Data624_Data/raw/main/ATM624Data.xlsx
+
+```{r, warning=FALSE}
+atm_coltype<-c("date","text","numeric")
+
+atm_import<-read_xlsx('ATM624Data.xlsx', col_types = atm_coltype)
+power_raw<-read_xlsx('ResidentialCustomerForecastLoad-624.xlsx')
+# Ommitting Extra Credit as I won't be working on it
+# WP1_df<-read_xlsx('Waterflow_Pipe1.xlsx')
+# WP2_df<-read_xlsx('Waterflow_Pipe2.xlsx')
+```
+
+# EDA & Cleanup
+
+
+```{r}
+head(atm_import%>%
+       filter(ATM=="ATM4"))
+```
+
+```{r}
+atm_range<-range(atm_import$DATE)
+atm_range[1]
+atm_range[2]
+```
+
+```{r}
+sapply(atm_import, function(x) sum(is.na(x)))
+```
+
+```{r}
+data.frame(atm_import$DATE[atm_import$Cash %in% NA])
+```
+
+* ATM624Data had attribute type mismatches, and was converted on import.
+* Date conversion somehow kept date time as POSIXct
+* ATM4 shows values in greater decimals any country, with Dinars being the only Country that uses more than 2 decimals when using its currency, but even the dinar stops at the 100th decimal.
+* Date range is 05-01-2009 to 05-14-2010
+* we see the count of NAs in ATM is 14 and Cash column is 19
+* The NA dates vary and are not exclusive to a specific sequential time period that we can just filter out.
+* I am curious about the distrobution of cash considering the forecast ask for this project.
+
+
+
+
+```{r}
+atm_import %>% 
+  filter(DATE < "2010-05-01", !is.na(ATM)) %>% 
+  ggplot(aes(x = Cash)) +
+    geom_histogram(bins = 30, color= "blue") +
+    facet_wrap(~ ATM, ncol = 2, scales = "free")
+```
+
+
+```{r}
+(atm_df <- atm_import %>% 
+  mutate(DATE = as.Date(DATE)) %>%
+   filter(DATE<"2010-05-01")%>%
+  pivot_wider(names_from=ATM, values_from = Cash))
+```
+
+```{r}
+atm_df<-atm_df%>%
+  as_tsibble(index=DATE)
+head(atm_df)
+```
+
+```{r}
+summary(atm_df)
+```
+
+
+```{r}
+atm_df[!complete.cases(atm_df), ]
+```
+
+
+
+
+
+
+```{r}
+atm_df%>%
+  select(DATE,ATM3)%>%
+  filter(ATM3>0)
+```
+
+* Converting `DATE` into a date value made senses type POSIXct may cause future issues.
+* Pivoting allowed us to separate the ATM's categorically and isolate the NAs for removal.
+* We are able to see that five entries contain NAs and the dates all reside in June
+* ATM3 only has 3 dates with withdrawals 4-28 through 4-30 or 2010
+* These results also brings to question whether there may be some seasonality that will impact May's forecasting
+* Considering the distrobution, I chose to replace the missing values with the median, as the skewed values in ATM 3 & 4 I believe with negatively impact the mean
+
+```{r}
+
+# seasonality
+atm_import %>% 
+  filter(DATE < "2010-05-01", !is.na(ATM)) %>% 
+  ggplot(aes(x = DATE, y = Cash, col = ATM)) +
+    geom_line(color="blue") +
+    facet_wrap(~ ATM, ncol = 2, scales = "free_y")+
+  labs(title = "Seasonality Plot", x = "Date", y = "Cash") +
+    theme_minimal()
+    
+```
+
+```{r}
+
+median_value <- median(atm_df[["ATM1"]], na.rm = TRUE)
+atm_df[["ATM1"]][is.na(atm_df[["ATM1"]])] <- median_value
+median_value <- median(atm_df[["ATM2"]], na.rm = TRUE)
+atm_df[["ATM2"]][is.na(atm_df[["ATM2"]])] <- median_value
+
+```
+
+
+```{r}
+atm_df[!complete.cases(atm_df), ]
+```
+# Forecasts
+
+## ATM1
+
+### STL Decomposition
+
+The seasonality plot did not show a trend in the long term but a better assessment in weekly interval is likely needed, using resources from [Rob J Hyndman and George Athanasopoulos, Forecasting: Principles and Practice (3rd ed) section 3.6 STL decomposition](https://otexts.com/fpp3/stl.html) I will perform a STL "Seasonal and Trend decomposition using Loess" decomposition of the series. To make it weekly I'll set the parameter `trend(window = 7)` and the `season(window='periodic')` to impose seasonality element across days of the week.
+
+My reference come directly from the chapter.
+
+              us_retail_employment |>
+                model(
+                  STL(Employed ~ trend(window = 7) +
+                                 season(window = "periodic"),
+                  robust = TRUE)) |>
+                components() |>
+                autoplot()
+
+```{r message=FALSE, warning=FALSE}
+atm1_df <- atm_df %>% 
+  dplyr::select(DATE, ATM1)
+
+atm1_df %>%
+  model(
+    STL(ATM1 ~ trend(window = 7) +
+                   season(window = "periodic"),
+    robust = TRUE)) %>%
+  components() %>%
+  autoplot()
+```
+
+
+```{r message=FALSE, warning=FALSE}
+ndiffs(atm1_df$ATM1)
+```
+
+```{r message=FALSE, warning=FALSE}
+atm1_df %>% 
+  ACF(ATM1, lag_max = 30) %>% 
+  autoplot()
+```
+
+The STL decomposition wasn't as telling as I would have liked, however the ACF plot presents lags at 2, 5, and 7. I believe, given the week starts on Sunday, that this represents Monday, Thursday and Saturday as the days with the most lag. 7 has shown the value with the most significant lag. There is a decreasing trend with the ACF plot, and supports that the data is non-stationary would require differencing however $r_ 1's$ small value and the results of the `ndiff()` function, showing the first number of differences as 0, negates that suspicion.
+
+### ARIMA
+
+Seasonal naive method was my preferred choice considering the seasonality, and so we can use the prior time period’s withdrawals to conduct our forecast, but I also like to default to `Auto ARIMA` for the optimized selection. I assume ETS and ARIMA wont perform as well but will await for the comparisons. Below we filter out the data residing in May, the month we are forecasting.
+
+```{r fig.height=10, fig.width=15, message=FALSE, warning=FALSE}
+# train
+atm1_train <- atm1_df %>%
+  filter(DATE <= "2010-04-01")
+
+
+atm1_fit <- atm1_train %>%
+  model(
+    SNAIVE = SNAIVE(ATM1),
+    ETS = ETS(ATM1),
+    ARIMA = ARIMA(ATM1),
+    `Auto ARIMA` = ARIMA(ATM1, stepwise = FALSE, approx = FALSE)
+  )
+
+# forecast April
+atm1_forecast <- atm1_fit %>%
+  forecast(h = 30)
+
+#plot
+atm1_forecast %>%
+  autoplot(atm1_df, level = NULL)+
+  facet_wrap( ~ .model, scales = "free_y") +
+  guides(colour = guide_legend(title = "Forecast"))+
+  labs(title= "ATM1 Forecasts | April") +
+  xlab("Date") +
+  ylab("$$$ (In Hundreds)") 
+```
+
+
+```{r message=FALSE, warning=FALSE}
+# RMSE
+accuracy(atm1_forecast, atm1_df) %>%
+  select(.model, RMSE:MAPE)
+```
+
+
+When interpreting the results, the model with the lowest RMSE and MAE value and the MPE and MAPE values closes to zero the best performing. This is true in all cases for ETS indicating it is the best performing.
+
+### Forecast
+
+** Reference**
+
+                          aus_economy |>
+                            model(ETS(Population)) |>
+                            forecast(h = "5 years") |>
+                            autoplot(aus_economy |> filter(Year >= 2000)) +
+                            labs(title = "Australian population",
+                                 y = "People (millions)")
+
+
+
+```{r message=FALSE, warning=FALSE}
+# remade the model from source
+atm1_fit_ets <- atm1_df %>% 
+  model(ETS = ETS(ATM1))
+
+atm1_forecast_ets <- atm1_fit_ets %>% 
+  forecast(h=30)
+
+atm1_forecast_ets %>% 
+  autoplot(atm1_df) +
+  labs(title = "ATM1 Forecast (ETS) | May",
+       y = "$$$ (in Hundreds)")
+```
+
+```{r}
+(atm1_forecast_results <- 
+  as.data.frame(atm1_forecast_ets) %>%
+    select(DATE, .mean) %>% 
+      rename(Date = DATE, Cash = .mean)%>%
+        mutate(Cash=round(Cash,2)))
+```
+
+## ATM2
+
+### STL Decomposition
+
+```{r message=FALSE, warning=FALSE}
+atm2_df <- atm_df %>% 
+  dplyr::select(DATE, ATM2)
+
+atm2_df %>%
+  model(
+    STL(ATM2 ~ trend(window = 7) +
+                   season(window = "periodic"),
+    robust = TRUE)) %>%
+  components() %>%
+  autoplot()
+```
+
+```{r}
+ndiffs(atm2_df$ATM2)
+```
+
+```{r}
+unitroot_ndiffs(atm2_df$ATM2)
+```
+
+
+```{r message=FALSE, warning=FALSE}
+atm2_df %>% 
+  ACF(ATM2, lag_max = 30) %>% 
+  autoplot()
+```
+
+The approach with ATM2 is a rinse and repeat but in this case differencing is needed and achieved with the below code
+
+```{r}
+atm2_df <- atm2_df %>% 
+  mutate(diff_ATM2= difference(ATM2))
+```
+
+### ARIMA
+
+Below we again filter out data 
+
+```{r fig.height=8, fig.width=15, message=FALSE, warning=FALSE}
+
+train <- atm2_df %>%
+  filter(DATE <= "2010-04-01")
+
+#run seasonal related models without the differenced data
+atm2_fit <- train %>%
+  model(
+    SNAIVE = SNAIVE(ATM2),
+    ETS = ETS(ATM2),
+  )
+
+#run models with differenced data
+atm2_fit2 <- train %>%
+  slice(2:336) %>% 
+  model(
+    ETS_diff = ETS(diff_ATM2),
+    ARIMA = ARIMA(diff_ATM2),
+   `Auto ARIMA` = ARIMA(diff_ATM2, stepwise = FALSE, approx = FALSE)
+  )
+
+#forecast_ATM2 April
+forecast_ATM2_1 <- atm2_fit %>%
+  forecast(h = 30)
+
+#forecast_ATM2 April
+forecast_ATM2_2 <- atm2_fit2 %>%
+  forecast(h = 30)
+
+#plot
+forecast_ATM2_1 %>%
+  autoplot(atm2_df, level = NULL)+
+  facet_wrap( ~ .model, scales = "free_y") +
+  guides(colour = guide_legend(title = "Forecast"))+
+  labs(title= "ATM2 Forecasts",
+       subtitle = "April 2010") +
+  xlab("Date") +
+  ylab("Cash values in Hundreds") 
+
+#plot 2
+forecast_ATM2_2 %>%
+  autoplot(atm2_df, level = NULL)+
+  facet_wrap( ~ .model, scales = "free_y") +
+  guides(colour = guide_legend(title = "Forecast"))+
+  labs(title= "ATM2 Forecasts",
+       subtitle = "April 2010") +
+  xlab("Date") +
+  ylab("Cash")
+```
+
+
+
+
+```{r}
+#write_excel_csv(atm1_forecast_results, "atm1_forecast_results.csv")
+```
+
