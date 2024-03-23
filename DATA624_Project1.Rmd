@@ -3,12 +3,12 @@ title: 'DATA 624: PREDICTIVE ANALYTICS Project 1'
 author: "Gabriel Campos"
 date: "Last edited `r format(Sys.time(), '%B %d, %Y')`"
 output:
-  html_notebook: default
+  pdf_document:
+    latex_engine: xelatex
   geometry: left=0.5cm,right=0.5cm,top=1cm,bottom=2cm
   html_document:
     df_print: paged
-  pdf_document:
-    latex_engine: xelatex
+  html_notebook: default
 urlcolor: blue
 ---
 
@@ -62,7 +62,9 @@ power_raw<-read_xlsx('ResidentialCustomerForecastLoad-624.xlsx')
 # WP2_df<-read_xlsx('Waterflow_Pipe2.xlsx')
 ```
 
-# EDA & Cleanup
+# Part A
+
+## EDA & Cleanup
 
 
 ```{r}
@@ -90,7 +92,7 @@ data.frame(atm_import$DATE[atm_import$Cash %in% NA])
 * Date range is 05-01-2009 to 05-14-2010
 * we see the count of NAs in ATM is 14 and Cash column is 19
 * The NA dates vary and are not exclusive to a specific sequential time period that we can just filter out.
-* I am curious about the distrobution of cash considering the forecast ask for this project.
+* I am curious about the distribution of cash considering the forecast ask for this project.
 
 
 
@@ -140,9 +142,9 @@ atm_df%>%
 * Converting `DATE` into a date value made senses type POSIXct may cause future issues.
 * Pivoting allowed us to separate the ATM's categorically and isolate the NAs for removal.
 * We are able to see that five entries contain NAs and the dates all reside in June
-* ATM3 only has 3 dates with withdrawals 4-28 through 4-30 or 2010
+* ATM3 only has 3 dates with withdrawals 4-28 through 4-30 or 2010, and the distribution plot is arguably a reason to omit this column
 * These results also brings to question whether there may be some seasonality that will impact May's forecasting
-* Considering the distrobution, I chose to replace the missing values with the median, as the skewed values in ATM 3 & 4 I believe with negatively impact the mean
+* Considering the distribution, I chose to replace the missing values with the median, as the skewed values in ATM 3 & 4 I believe with negatively impact the mean
 
 ```{r}
 
@@ -170,11 +172,11 @@ atm_df[["ATM2"]][is.na(atm_df[["ATM2"]])] <- median_value
 ```{r}
 atm_df[!complete.cases(atm_df), ]
 ```
-# Forecasts
+## Forecasts
 
-## ATM1
+### ATM1
 
-### STL Decomposition
+#### STL Decomposition
 
 The seasonality plot did not show a trend in the long term but a better assessment in weekly interval is likely needed, using resources from [Rob J Hyndman and George Athanasopoulos, Forecasting: Principles and Practice (3rd ed) section 3.6 STL decomposition](https://otexts.com/fpp3/stl.html) I will perform a STL "Seasonal and Trend decomposition using Loess" decomposition of the series. To make it weekly I'll set the parameter `trend(window = 7)` and the `season(window='periodic')` to impose seasonality element across days of the week.
 
@@ -214,7 +216,7 @@ atm1_df %>%
 
 The STL decomposition wasn't as telling as I would have liked, however the ACF plot presents lags at 2, 5, and 7. I believe, given the week starts on Sunday, that this represents Monday, Thursday and Saturday as the days with the most lag. 7 has shown the value with the most significant lag. There is a decreasing trend with the ACF plot, and supports that the data is non-stationary would require differencing however $r_ 1's$ small value and the results of the `ndiff()` function, showing the first number of differences as 0, negates that suspicion.
 
-### ARIMA
+#### ARIMA
 
 Seasonal naive method was my preferred choice considering the seasonality, and so we can use the prior time period’s withdrawals to conduct our forecast, but I also like to default to `Auto ARIMA` for the optimized selection. I assume ETS and ARIMA wont perform as well but will await for the comparisons. Below we filter out the data residing in May, the month we are forecasting.
 
@@ -256,7 +258,7 @@ accuracy(atm1_forecast, atm1_df) %>%
 
 When interpreting the results, the model with the lowest RMSE and MAE value and the MPE and MAPE values closes to zero the best performing. This is true in all cases for ETS indicating it is the best performing.
 
-### Forecast
+#### Forecast
 
 ** Reference**
 
@@ -291,9 +293,9 @@ atm1_forecast_ets %>%
         mutate(Cash=round(Cash,2)))
 ```
 
-## ATM2
+### ATM2
 
-### STL Decomposition
+#### STL Decomposition
 
 ```{r message=FALSE, warning=FALSE}
 atm2_df <- atm_df %>% 
@@ -330,9 +332,9 @@ atm2_df <- atm2_df %>%
   mutate(diff_ATM2= difference(ATM2))
 ```
 
-### ARIMA
+#### ARIMA
 
-Below we again filter out data 
+Below we again filter out data and identify our best model but include both differenced and non-differenced data.
 
 ```{r fig.height=8, fig.width=15, message=FALSE, warning=FALSE}
 
@@ -340,14 +342,14 @@ train <- atm2_df %>%
   filter(DATE <= "2010-04-01")
 
 #run seasonal related models without the differenced data
-atm2_fit <- train %>%
+atm2_fit_nondiff <- train %>%
   model(
     SNAIVE = SNAIVE(ATM2),
     ETS = ETS(ATM2),
   )
 
 #run models with differenced data
-atm2_fit2 <- train %>%
+atm2_fit_diff <- train %>%
   slice(2:336) %>% 
   model(
     ETS_diff = ETS(diff_ATM2),
@@ -356,38 +358,151 @@ atm2_fit2 <- train %>%
   )
 
 #forecast_ATM2 April
-forecast_ATM2_1 <- atm2_fit %>%
+atm2_forecast_nondiff <- atm2_fit_nondiff %>%
   forecast(h = 30)
 
 #forecast_ATM2 April
-forecast_ATM2_2 <- atm2_fit2 %>%
+atm2__forecast_diff <- atm2_fit_diff %>%
   forecast(h = 30)
 
 #plot
-forecast_ATM2_1 %>%
+atm2_forecast_nondiff %>%
   autoplot(atm2_df, level = NULL)+
   facet_wrap( ~ .model, scales = "free_y") +
   guides(colour = guide_legend(title = "Forecast"))+
-  labs(title= "ATM2 Forecasts",
-       subtitle = "April 2010") +
+  labs(title= "ATM2 Forecasts | April") +
   xlab("Date") +
-  ylab("Cash values in Hundreds") 
+  ylab("$$$ (In Hundreds)") 
 
 #plot 2
-forecast_ATM2_2 %>%
+atm2__forecast_diff %>%
   autoplot(atm2_df, level = NULL)+
   facet_wrap( ~ .model, scales = "free_y") +
   guides(colour = guide_legend(title = "Forecast"))+
-  labs(title= "ATM2 Forecasts",
-       subtitle = "April 2010") +
+  labs(title= "ATM2 Forecasts | April") +
   xlab("Date") +
   ylab("Cash")
 ```
 
 
+```{r message=FALSE, warning=FALSE}
+accuracy(atm2_forecast_nondiff, atm2_df) %>%
+  select(.model, RMSE:MAPE)
+
+accuracy(atm2__forecast_diff, atm2_df) %>%
+  select(.model, RMSE:MAPE)
+
+```
+
+Among the reuslts, the non-difference ETS model had the lowest RMSE & MAE, and MPE & MAPE closest to zero, making it the optimal choice.
+
+#### Forecast
+
+```{r message=FALSE, warning=FALSE}
+atm2_fit_ets <- atm2_df %>% 
+  model(
+    ETS = ETS(ATM2))
+
+#generate the values
+atm2_forecast_ets <- atm2_fit_ets %>% 
+  forecast(h=30)
+
+#plot
+atm2_forecast_ets %>% 
+  autoplot(atm2_df) +
+  labs(title = "ATM2 - ETS Forecast | May 2010",
+       y = "$$$ (In Hundreds)")
+```
+
+```{r}
+(atm2_forecast_results <- 
+  as.data.frame(atm2_forecast_ets) %>%
+    select(DATE, .mean) %>% 
+      rename(Date = DATE, Cash = .mean)%>%
+        mutate(Cash=round(Cash,2)))
+```
+
+### ATM3
+
+ATM3 was ultimately omitted, considering the limited date range and skewed distributions. It can be considered when more data is provided.
+
+### ATM4
+
+#### STL Decomposition
+
+```{r message=FALSE, warning=FALSE}
+atm4_df <- atm_df %>% 
+  select(DATE, ATM4)
+
+atm4_df %>%
+  model(
+    STL(ATM4 ~ trend(window = 7) +
+                   season(window = "periodic"),
+    robust = TRUE)) %>%
+  components() %>%
+  autoplot()
+```
+
+Considering the variance from the time series, I decided to tranform the data before forecasting using box-cox transformation
+
+#### Box-Cox
+
+**Reference**
+
+[Forecasting Principles and Practice](https://otexts.com/fpp3/transformations.html)
+
+          lambda <- aus_production |>
+            features(Gas, features = guerrero) |>
+            pull(lambda_guerrero)
+          aus_production |>
+            autoplot(box_cox(Gas, lambda)) +
+            labs(y = "",
+                 title = latex2exp::TeX(paste0(
+                   "Transformed gas production with $\\lambda$ = ",
+                   round(lambda,2))))
+
+```{r}
+(atm4_lambda <- atm4_df %>%
+  features(ATM4, features = guerrero) %>%
+  pull(lambda_guerrero))
+```
+
+```{r}
+atm4_transformed <- BoxCox(atm4_df$ATM4, lambda = atm4_lambda)
+
+# Extract the transformed data
+
+atm4_df$ATM4_T<-atm4_transformed
+
+#plot
+atm4_df%>% 
+  autoplot(ATM4_T) 
+```
 
 
 ```{r}
+ndiffs(atm4_df$ATM4)
+
+ndiffs(atm4_df$ATM4_T)
+```
+
+```{r}
+atm4_df %>% 
+  ACF(ATM4_T, lag_max = 28) %>% 
+  autoplot()
+```
+
+Using ndiff() we identify that theres no need for differencing, and the ACF shows
+
+The ACF plot below suggest lags only at 7. The ACF seems to be decreasing relatively slowly, but after close inspection it looks like the ACF decreases from lags 7 to 21, and then slightly shifts back up at 28. Given the shift, an additional check will be performed to see if the series requires differencing.
+
+
+#### ARIMA
+
+#### Forecast
+
+```{r}
 #write_excel_csv(atm1_forecast_results, "atm1_forecast_results.csv")
+#write_excel_csv(atm2_forecast_results, "atm2_forecast_results.csv")
 ```
 
