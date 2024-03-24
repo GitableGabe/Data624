@@ -1,0 +1,1681 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={DATA 624: PREDICTIVE ANALYTICS Project 1},
+  pdfauthor={Gabriel Campos},
+  colorlinks=true,
+  linkcolor={Maroon},
+  filecolor={Maroon},
+  citecolor={Blue},
+  urlcolor={blue},
+  pdfcreator={LaTeX via pandoc}}
+
+\title{DATA 624: PREDICTIVE ANALYTICS Project 1}
+\author{Gabriel Campos}
+\date{Last edited March 23, 2024}
+
+\begin{document}
+\maketitle
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(fpp3)}
+\FunctionTok{library}\NormalTok{(dplyr)}
+\FunctionTok{library}\NormalTok{(ggplot2)}
+\FunctionTok{library}\NormalTok{(readxl)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: package 'readxl' was built under R version 4.3.3
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(tsibble)}
+\FunctionTok{library}\NormalTok{(psych)}
+\FunctionTok{library}\NormalTok{(tidyr)}
+\FunctionTok{library}\NormalTok{(forecast)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: package 'forecast' was built under R version 4.3.3
+\end{verbatim}
+
+\hypertarget{description}{%
+\section{Description}\label{description}}
+
+This project consists of 3 parts - two required and one bonus and is
+worth 15\% of your grade. The project is due at 11:59 PM on Sunday Apr
+11. I will accept late submissions with a penalty until the meetup after
+that when we review some projects.
+
+\hypertarget{part-a}{%
+\subsection{Part A}\label{part-a}}
+
+\textbf{ATM Forecast}
+\href{https://bbhosted.cuny.edu/bbcswebdav/pid-81630946-dt-content-rid-636012399_1/xid-636012399_1}{ATM624Data.xlsx}
+
+In part A, I want you to forecast how much cash is taken out of 4
+different ATM machines for May 2010. The data is given in a single file.
+The variable `Cash' is provided in hundreds of dollars, other than that
+it is straight forward. I am being somewhat ambiguous on purpose to make
+this have a little more business feeling. Explain and demonstrate your
+process, techniques used and not used, and your actual forecast. I am
+giving you data via an excel file, please provide your written report on
+your findings, visuals, discussion and your R code via an RPubs link
+along with the actual.rmd file Also please submit the forecast which you
+will put in an Excel readable file.
+
+\hypertarget{part-b}{%
+\subsection{Part B}\label{part-b}}
+
+Forecasting Power
+\href{https://bbhosted.cuny.edu/bbcswebdav/pid-81630947-dt-content-rid-636015207_1/xid-636015207_1}{ResidentialCustomerForecastLoad-624.xlsx}
+
+Part B consists of a simple dataset of residential power usage for
+January 1998 until December 2013. Your assignment is to model these data
+and a monthly forecast for 2014. The data is given in a single file. The
+variable `KWH' is power consumption in Kilowatt hours, the rest is
+straight forward. Add this to your existing files above.
+
+\hypertarget{part-c}{%
+\subsection{Part C}\label{part-c}}
+
+BONUS, optional (part or all),
+\href{https://bbhosted.cuny.edu/bbcswebdav/pid-81630948-dt-content-rid-636015213_1/xid-636015213_1}{Waterflow\_Pipe1.xlsx}
+and
+\href{https://bbhosted.cuny.edu/bbcswebdav/pid-81630949-dt-content-rid-636015214_1/xid-636015214_1}{Waterflow\_Pipe2.xlsx}
+
+Part C consists of two data sets. These are simple 2 columns sets,
+however they have different time stamps. Your optional assignment is to
+time-base sequence the data and aggregate based on hour (example of what
+this looks like, follows). Note for multiple recordings within an hour,
+take the mean. Then to determine if the data is stationary and can it be
+forecast. If so, provide a week forward forecast and present results via
+Rpubs and .rmd and the forecast in an Excel readable file.
+
+\hypertarget{data-load}{%
+\subsection{Data Load}\label{data-load}}
+
+\url{https://github.com/GitableGabe/Data624_Data/raw/main/ATM624Data.xlsx}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{atm\_coltype}\OtherTok{\textless{}{-}}\FunctionTok{c}\NormalTok{(}\StringTok{"date"}\NormalTok{,}\StringTok{"text"}\NormalTok{,}\StringTok{"numeric"}\NormalTok{)}
+
+\NormalTok{atm\_import}\OtherTok{\textless{}{-}}\FunctionTok{read\_xlsx}\NormalTok{(}\StringTok{\textquotesingle{}ATM624Data.xlsx\textquotesingle{}}\NormalTok{, }\AttributeTok{col\_types =}\NormalTok{ atm\_coltype)}
+\CommentTok{\# Ommitting Extra Credit as I won\textquotesingle{}t be working on it}
+\CommentTok{\# WP1\_df\textless{}{-}read\_xlsx(\textquotesingle{}Waterflow\_Pipe1.xlsx\textquotesingle{})}
+\CommentTok{\# WP2\_df\textless{}{-}read\_xlsx(\textquotesingle{}Waterflow\_Pipe2.xlsx\textquotesingle{})}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{power\_raw}\OtherTok{\textless{}{-}}\FunctionTok{read\_xlsx}\NormalTok{(}\StringTok{\textquotesingle{}ResidentialCustomerForecastLoad{-}624.xlsx\textquotesingle{}}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{part-a-1}{%
+\section{Part A}\label{part-a-1}}
+
+\hypertarget{eda-cleanup}{%
+\subsection{EDA \& Cleanup}\label{eda-cleanup}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{head}\NormalTok{(atm\_import}\SpecialCharTok{\%\textgreater{}\%}
+       \FunctionTok{filter}\NormalTok{(ATM}\SpecialCharTok{==}\StringTok{"ATM4"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 6 x 3
+##   DATE                ATM    Cash
+##   <dttm>              <chr> <dbl>
+## 1 2009-05-01 00:00:00 ATM4  777. 
+## 2 2009-05-02 00:00:00 ATM4  524. 
+## 3 2009-05-03 00:00:00 ATM4  793. 
+## 4 2009-05-04 00:00:00 ATM4  908. 
+## 5 2009-05-05 00:00:00 ATM4   52.8
+## 6 2009-05-06 00:00:00 ATM4   52.2
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{atm\_range}\OtherTok{\textless{}{-}}\FunctionTok{range}\NormalTok{(atm\_import}\SpecialCharTok{$}\NormalTok{DATE)}
+\NormalTok{atm\_range[}\DecValTok{1}\NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "2009-05-01 UTC"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{atm\_range[}\DecValTok{2}\NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "2010-05-14 UTC"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{sapply}\NormalTok{(atm\_import, }\ControlFlowTok{function}\NormalTok{(x) }\FunctionTok{sum}\NormalTok{(}\FunctionTok{is.na}\NormalTok{(x)))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## DATE  ATM Cash 
+##    0   14   19
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{data.frame}\NormalTok{(atm\_import}\SpecialCharTok{$}\NormalTok{DATE[atm\_import}\SpecialCharTok{$}\NormalTok{Cash }\SpecialCharTok{\%in\%} \ConstantTok{NA}\NormalTok{])}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##    atm_import.DATE.atm_import.Cash..in..NA.
+## 1                                2009-06-13
+## 2                                2009-06-16
+## 3                                2009-06-18
+## 4                                2009-06-22
+## 5                                2009-06-24
+## 6                                2010-05-01
+## 7                                2010-05-02
+## 8                                2010-05-03
+## 9                                2010-05-04
+## 10                               2010-05-05
+## 11                               2010-05-06
+## 12                               2010-05-07
+## 13                               2010-05-08
+## 14                               2010-05-09
+## 15                               2010-05-10
+## 16                               2010-05-11
+## 17                               2010-05-12
+## 18                               2010-05-13
+## 19                               2010-05-14
+\end{verbatim}
+
+\begin{itemize}
+\tightlist
+\item
+  ATM624Data had attribute type mismatches, and was converted on import.
+\item
+  Date conversion somehow kept date time as POSIXct
+\item
+  ATM4 shows values in greater decimals any country, with Dinars being
+  the only Country that uses more than 2 decimals when using its
+  currency, but even the dinar stops at the 100th decimal.
+\item
+  Date range is 05-01-2009 to 05-14-2010
+\item
+  we see the count of NAs in ATM is 14 and Cash column is 19
+\item
+  The NA dates vary and are not exclusive to a specific sequential time
+  period that we can just filter out.
+\item
+  I am curious about the distribution of cash considering the forecast
+  ask for this project.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{atm\_import }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{filter}\NormalTok{(DATE }\SpecialCharTok{\textless{}} \StringTok{"2010{-}05{-}01"}\NormalTok{, }\SpecialCharTok{!}\FunctionTok{is.na}\NormalTok{(ATM)) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{ggplot}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Cash)) }\SpecialCharTok{+}
+    \FunctionTok{geom\_histogram}\NormalTok{(}\AttributeTok{bins =} \DecValTok{30}\NormalTok{, }\AttributeTok{color=} \StringTok{"blue"}\NormalTok{) }\SpecialCharTok{+}
+    \FunctionTok{facet\_wrap}\NormalTok{(}\SpecialCharTok{\textasciitilde{}}\NormalTok{ ATM, }\AttributeTok{ncol =} \DecValTok{2}\NormalTok{, }\AttributeTok{scales =} \StringTok{"free"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: Removed 5 rows containing non-finite values (`stat_bin()`).
+\end{verbatim}
+
+\includegraphics{DATA624_Project1_files/figure-latex/unnamed-chunk-8-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{(atm\_df }\OtherTok{\textless{}{-}}\NormalTok{ atm\_import }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{DATE =} \FunctionTok{as.Date}\NormalTok{(DATE)) }\SpecialCharTok{\%\textgreater{}\%}
+   \FunctionTok{filter}\NormalTok{(DATE}\SpecialCharTok{\textless{}}\StringTok{"2010{-}05{-}01"}\NormalTok{)}\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{pivot\_wider}\NormalTok{(}\AttributeTok{names\_from=}\NormalTok{ATM, }\AttributeTok{values\_from =}\NormalTok{ Cash))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 365 x 5
+##    DATE        ATM1  ATM2  ATM3  ATM4
+##    <date>     <dbl> <dbl> <dbl> <dbl>
+##  1 2009-05-01    96   107     0 777. 
+##  2 2009-05-02    82    89     0 524. 
+##  3 2009-05-03    85    90     0 793. 
+##  4 2009-05-04    90    55     0 908. 
+##  5 2009-05-05    99    79     0  52.8
+##  6 2009-05-06    88    19     0  52.2
+##  7 2009-05-07     8     2     0  55.5
+##  8 2009-05-08   104   103     0 559. 
+##  9 2009-05-09    87   107     0 904. 
+## 10 2009-05-10    93   118     0 879. 
+## # i 355 more rows
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{atm\_df}\OtherTok{\textless{}{-}}\NormalTok{atm\_df}\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{as\_tsibble}\NormalTok{(}\AttributeTok{index=}\NormalTok{DATE)}
+\FunctionTok{head}\NormalTok{(atm\_df)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tsibble: 6 x 5 [1D]
+##   DATE        ATM1  ATM2  ATM3  ATM4
+##   <date>     <dbl> <dbl> <dbl> <dbl>
+## 1 2009-05-01    96   107     0 777. 
+## 2 2009-05-02    82    89     0 524. 
+## 3 2009-05-03    85    90     0 793. 
+## 4 2009-05-04    90    55     0 908. 
+## 5 2009-05-05    99    79     0  52.8
+## 6 2009-05-06    88    19     0  52.2
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{summary}\NormalTok{(atm\_df)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##       DATE                 ATM1             ATM2             ATM3        
+##  Min.   :2009-05-01   Min.   :  1.00   Min.   :  0.00   Min.   : 0.0000  
+##  1st Qu.:2009-07-31   1st Qu.: 73.00   1st Qu.: 25.50   1st Qu.: 0.0000  
+##  Median :2009-10-30   Median : 91.00   Median : 67.00   Median : 0.0000  
+##  Mean   :2009-10-30   Mean   : 83.89   Mean   : 62.58   Mean   : 0.7206  
+##  3rd Qu.:2010-01-29   3rd Qu.:108.00   3rd Qu.: 93.00   3rd Qu.: 0.0000  
+##  Max.   :2010-04-30   Max.   :180.00   Max.   :147.00   Max.   :96.0000  
+##                       NA's   :3        NA's   :2                         
+##       ATM4          
+##  Min.   :    1.563  
+##  1st Qu.:  124.334  
+##  Median :  403.839  
+##  Mean   :  474.043  
+##  3rd Qu.:  704.507  
+##  Max.   :10919.762  
+## 
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{atm\_df[}\SpecialCharTok{!}\FunctionTok{complete.cases}\NormalTok{(atm\_df), ]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tsibble: 5 x 5 [1D]
+##   DATE        ATM1  ATM2  ATM3  ATM4
+##   <date>     <dbl> <dbl> <dbl> <dbl>
+## 1 2009-06-13    NA    91     0 746. 
+## 2 2009-06-16    NA    82     0 373. 
+## 3 2009-06-18    21    NA     0  92.5
+## 4 2009-06-22    NA    90     0  80.6
+## 5 2009-06-24    66    NA     0  90.6
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{atm\_df}\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{select}\NormalTok{(DATE,ATM3)}\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(ATM3}\SpecialCharTok{\textgreater{}}\DecValTok{0}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tsibble: 3 x 2 [1D]
+##   DATE        ATM3
+##   <date>     <dbl>
+## 1 2010-04-28    96
+## 2 2010-04-29    82
+## 3 2010-04-30    85
+\end{verbatim}
+
+\begin{itemize}
+\tightlist
+\item
+  Converting \texttt{DATE} into a date value made senses type POSIXct
+  may cause future issues.
+\item
+  Pivoting allowed us to separate the ATM's categorically and isolate
+  the NAs for removal.
+\item
+  We are able to see that five entries contain NAs and the dates all
+  reside in June
+\item
+  ATM3 only has 3 dates with withdrawals 4-28 through 4-30 or 2010, and
+  the distribution plot is arguably a reason to omit this column
+\item
+  These results also brings to question whether there may be some
+  seasonality that will impact May's forecasting
+\item
+  Considering the distribution, I chose to replace the missing values
+  with the median, as the skewed values in ATM 3 \& 4 I believe with
+  negatively impact the mean
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# seasonality}
+\NormalTok{atm\_import }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{filter}\NormalTok{(DATE }\SpecialCharTok{\textless{}} \StringTok{"2010{-}05{-}01"}\NormalTok{, }\SpecialCharTok{!}\FunctionTok{is.na}\NormalTok{(ATM)) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{ggplot}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ DATE, }\AttributeTok{y =}\NormalTok{ Cash, }\AttributeTok{col =}\NormalTok{ ATM)) }\SpecialCharTok{+}
+    \FunctionTok{geom\_line}\NormalTok{(}\AttributeTok{color=}\StringTok{"blue"}\NormalTok{) }\SpecialCharTok{+}
+    \FunctionTok{facet\_wrap}\NormalTok{(}\SpecialCharTok{\textasciitilde{}}\NormalTok{ ATM, }\AttributeTok{ncol =} \DecValTok{2}\NormalTok{, }\AttributeTok{scales =} \StringTok{"free\_y"}\NormalTok{)}\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Seasonality Plot"}\NormalTok{, }\AttributeTok{x =} \StringTok{"Date"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Cash"}\NormalTok{) }\SpecialCharTok{+}
+    \FunctionTok{theme\_minimal}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{DATA624_Project1_files/figure-latex/unnamed-chunk-14-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{median\_value }\OtherTok{\textless{}{-}} \FunctionTok{median}\NormalTok{(atm\_df[[}\StringTok{"ATM1"}\NormalTok{]], }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{atm\_df[[}\StringTok{"ATM1"}\NormalTok{]][}\FunctionTok{is.na}\NormalTok{(atm\_df[[}\StringTok{"ATM1"}\NormalTok{]])] }\OtherTok{\textless{}{-}}\NormalTok{ median\_value}
+\NormalTok{median\_value }\OtherTok{\textless{}{-}} \FunctionTok{median}\NormalTok{(atm\_df[[}\StringTok{"ATM2"}\NormalTok{]], }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{atm\_df[[}\StringTok{"ATM2"}\NormalTok{]][}\FunctionTok{is.na}\NormalTok{(atm\_df[[}\StringTok{"ATM2"}\NormalTok{]])] }\OtherTok{\textless{}{-}}\NormalTok{ median\_value}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{atm\_df[}\SpecialCharTok{!}\FunctionTok{complete.cases}\NormalTok{(atm\_df), ]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tsibble: 0 x 5 [?]
+## # i 5 variables: DATE <date>, ATM1 <dbl>, ATM2 <dbl>, ATM3 <dbl>, ATM4 <dbl>
+\end{verbatim}
+
+\hypertarget{forecasts}{%
+\subsection{Forecasts}\label{forecasts}}
+
+\hypertarget{atm1}{%
+\subsubsection{ATM1}\label{atm1}}
+
+\hypertarget{stl-decomposition}{%
+\paragraph{STL Decomposition}\label{stl-decomposition}}
+
+The seasonality plot did not show a trend in the long term but a better
+assessment in weekly interval is likely needed, using resources from
+\href{https://otexts.com/fpp3/stl.html}{Rob J Hyndman and George
+Athanasopoulos, Forecasting: Principles and Practice (3rd ed) section
+3.6 STL decomposition} I will perform a STL ``Seasonal and Trend
+decomposition using Loess'' decomposition of the series. To make it
+weekly I'll set the parameter \texttt{trend(window\ =\ 7)} and the
+\texttt{season(window=\textquotesingle{}periodic\textquotesingle{})} to
+impose seasonality element across days of the week.
+
+My reference come directly from the chapter.
+
+\begin{verbatim}
+          us_retail_employment |>
+            model(
+              STL(Employed ~ trend(window = 7) +
+                             season(window = "periodic"),
+              robust = TRUE)) |>
+            components() |>
+            autoplot()
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{atm1\_df }\OtherTok{\textless{}{-}}\NormalTok{ atm\_df }\SpecialCharTok{\%\textgreater{}\%} 
+\NormalTok{  dplyr}\SpecialCharTok{::}\FunctionTok{select}\NormalTok{(DATE, ATM1)}
+
+\NormalTok{atm1\_df }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{model}\NormalTok{(}
+    \FunctionTok{STL}\NormalTok{(ATM1 }\SpecialCharTok{\textasciitilde{}} \FunctionTok{trend}\NormalTok{(}\AttributeTok{window =} \DecValTok{7}\NormalTok{) }\SpecialCharTok{+}
+                   \FunctionTok{season}\NormalTok{(}\AttributeTok{window =} \StringTok{"periodic"}\NormalTok{),}
+    \AttributeTok{robust =} \ConstantTok{TRUE}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{components}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{autoplot}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{DATA624_Project1_files/figure-latex/unnamed-chunk-17-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ndiffs}\NormalTok{(atm1\_df}\SpecialCharTok{$}\NormalTok{ATM1)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{atm1\_df }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{ACF}\NormalTok{(ATM1, }\AttributeTok{lag\_max =} \DecValTok{30}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{autoplot}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{DATA624_Project1_files/figure-latex/unnamed-chunk-19-1.pdf}
+
+The STL decomposition wasn't as telling as I would have liked, however
+the ACF plot presents lags at 2, 5, and 7. I believe, given the week
+starts on Sunday, that this represents Monday, Thursday and Saturday as
+the days with the most lag. 7 has shown the value with the most
+significant lag. There is a decreasing trend with the ACF plot, and
+supports that the data is non-stationary would require differencing
+however \(r_ 1's\) small value and the results of the \texttt{ndiff()}
+function, showing the first number of differences as 0, negates that
+suspicion.
+
+\hypertarget{arima}{%
+\paragraph{ARIMA}\label{arima}}
+
+Seasonal naive method was my preferred choice considering the
+seasonality, and so we can use the prior time period's withdrawals to
+conduct our forecast, but I also like to default to \texttt{Auto\ ARIMA}
+for the optimized selection. I assume ETS and ARIMA wont perform as well
+but will await for the comparisons. Below we filter out the data
+residing in May, the month we are forecasting.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# train}
+\NormalTok{atm1\_train }\OtherTok{\textless{}{-}}\NormalTok{ atm1\_df }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(DATE }\SpecialCharTok{\textless{}=} \StringTok{"2010{-}04{-}01"}\NormalTok{)}
+
+
+\NormalTok{atm1\_fit }\OtherTok{\textless{}{-}}\NormalTok{ atm1\_train }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{model}\NormalTok{(}
+    \AttributeTok{SNAIVE =} \FunctionTok{SNAIVE}\NormalTok{(ATM1),}
+    \AttributeTok{ETS =} \FunctionTok{ETS}\NormalTok{(ATM1),}
+    \AttributeTok{ARIMA =} \FunctionTok{ARIMA}\NormalTok{(ATM1),}
+    \StringTok{\textasciigrave{}}\AttributeTok{Auto ARIMA}\StringTok{\textasciigrave{}} \OtherTok{=} \FunctionTok{ARIMA}\NormalTok{(ATM1, }\AttributeTok{stepwise =} \ConstantTok{FALSE}\NormalTok{, }\AttributeTok{approx =} \ConstantTok{FALSE}\NormalTok{)}
+\NormalTok{  )}
+
+\CommentTok{\# forecast April}
+\NormalTok{atm1\_forecast }\OtherTok{\textless{}{-}}\NormalTok{ atm1\_fit }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{forecast}\NormalTok{(}\AttributeTok{h =} \DecValTok{30}\NormalTok{)}
+
+\CommentTok{\#plot}
+\NormalTok{atm1\_forecast }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{autoplot}\NormalTok{(atm1\_df, }\AttributeTok{level =} \ConstantTok{NULL}\NormalTok{)}\SpecialCharTok{+}
+  \FunctionTok{facet\_wrap}\NormalTok{( }\SpecialCharTok{\textasciitilde{}}\NormalTok{ .model, }\AttributeTok{scales =} \StringTok{"free\_y"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{guides}\NormalTok{(}\AttributeTok{colour =} \FunctionTok{guide\_legend}\NormalTok{(}\AttributeTok{title =} \StringTok{"Forecast"}\NormalTok{))}\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title=} \StringTok{"ATM1 Forecasts | April"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{xlab}\NormalTok{(}\StringTok{"Date"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{ylab}\NormalTok{(}\StringTok{"$$$ (In Hundreds)"}\NormalTok{) }
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{DATA624_Project1_files/figure-latex/unnamed-chunk-20-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# RMSE}
+\FunctionTok{accuracy}\NormalTok{(atm1\_forecast, atm1\_df) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{select}\NormalTok{(.model, RMSE}\SpecialCharTok{:}\NormalTok{MAPE)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 4 x 5
+##   .model      RMSE   MAE   MPE  MAPE
+##   <chr>      <dbl> <dbl> <dbl> <dbl>
+## 1 ARIMA       12.6 10.0  -85.8  88.9
+## 2 Auto ARIMA  13.0 10.1  -98.9 102. 
+## 3 ETS         12.1  9.55 -64.5  67.8
+## 4 SNAIVE      16.8 14.5  -69.5  76.6
+\end{verbatim}
+
+When interpreting the results, the model with the lowest RMSE and MAE
+value and the MPE and MAPE values closes to zero the best performing.
+This is true in all cases for ETS indicating it is the best performing.
+
+\hypertarget{forecast}{%
+\paragraph{Forecast}\label{forecast}}
+
+** Reference**
+
+\begin{verbatim}
+                      aus_economy |>
+                        model(ETS(Population)) |>
+                        forecast(h = "5 years") |>
+                        autoplot(aus_economy |> filter(Year >= 2000)) +
+                        labs(title = "Australian population",
+                             y = "People (millions)")
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# remade the model from source}
+\NormalTok{atm1\_fit\_ets }\OtherTok{\textless{}{-}}\NormalTok{ atm1\_df }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{model}\NormalTok{(}\AttributeTok{ETS =} \FunctionTok{ETS}\NormalTok{(ATM1))}
+
+\NormalTok{atm1\_forecast\_ets }\OtherTok{\textless{}{-}}\NormalTok{ atm1\_fit\_ets }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{forecast}\NormalTok{(}\AttributeTok{h=}\DecValTok{30}\NormalTok{)}
+
+\NormalTok{atm1\_forecast\_ets }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{autoplot}\NormalTok{(atm1\_df) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"ATM1 Forecast (ETS) | May"}\NormalTok{,}
+       \AttributeTok{y =} \StringTok{"$$$ (in Hundreds)"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{DATA624_Project1_files/figure-latex/unnamed-chunk-22-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{(atm1\_forecast\_results }\OtherTok{\textless{}{-}} 
+  \FunctionTok{as.data.frame}\NormalTok{(atm1\_forecast\_ets) }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{select}\NormalTok{(DATE, .mean) }\SpecialCharTok{\%\textgreater{}\%} 
+      \FunctionTok{rename}\NormalTok{(}\AttributeTok{Date =}\NormalTok{ DATE, }\AttributeTok{Cash =}\NormalTok{ .mean)}\SpecialCharTok{\%\textgreater{}\%}
+        \FunctionTok{mutate}\NormalTok{(}\AttributeTok{Cash=}\FunctionTok{round}\NormalTok{(Cash,}\DecValTok{2}\NormalTok{)))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##          Date   Cash
+## 1  2010-05-01  87.05
+## 2  2010-05-02 100.76
+## 3  2010-05-03  73.11
+## 4  2010-05-04   5.74
+## 5  2010-05-05 100.13
+## 6  2010-05-06  79.43
+## 7  2010-05-07  85.60
+## 8  2010-05-08  87.05
+## 9  2010-05-09 100.76
+## 10 2010-05-10  73.11
+## 11 2010-05-11   5.74
+## 12 2010-05-12 100.13
+## 13 2010-05-13  79.43
+## 14 2010-05-14  85.60
+## 15 2010-05-15  87.05
+## 16 2010-05-16 100.76
+## 17 2010-05-17  73.11
+## 18 2010-05-18   5.74
+## 19 2010-05-19 100.13
+## 20 2010-05-20  79.43
+## 21 2010-05-21  85.60
+## 22 2010-05-22  87.05
+## 23 2010-05-23 100.76
+## 24 2010-05-24  73.11
+## 25 2010-05-25   5.74
+## 26 2010-05-26 100.13
+## 27 2010-05-27  79.43
+## 28 2010-05-28  85.60
+## 29 2010-05-29  87.05
+## 30 2010-05-30 100.76
+\end{verbatim}
+
+\hypertarget{atm2}{%
+\subsubsection{ATM2}\label{atm2}}
+
+\hypertarget{stl-decomposition-1}{%
+\paragraph{STL Decomposition}\label{stl-decomposition-1}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{atm2\_df }\OtherTok{\textless{}{-}}\NormalTok{ atm\_df }\SpecialCharTok{\%\textgreater{}\%} 
+\NormalTok{  dplyr}\SpecialCharTok{::}\FunctionTok{select}\NormalTok{(DATE, ATM2)}
+
+\NormalTok{atm2\_df }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{model}\NormalTok{(}
+    \FunctionTok{STL}\NormalTok{(ATM2 }\SpecialCharTok{\textasciitilde{}} \FunctionTok{trend}\NormalTok{(}\AttributeTok{window =} \DecValTok{7}\NormalTok{) }\SpecialCharTok{+}
+                   \FunctionTok{season}\NormalTok{(}\AttributeTok{window =} \StringTok{"periodic"}\NormalTok{),}
+    \AttributeTok{robust =} \ConstantTok{TRUE}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{components}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{autoplot}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{DATA624_Project1_files/figure-latex/unnamed-chunk-24-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ndiffs}\NormalTok{(atm2\_df}\SpecialCharTok{$}\NormalTok{ATM2)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 1
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{unitroot\_ndiffs}\NormalTok{(atm2\_df}\SpecialCharTok{$}\NormalTok{ATM2)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## ndiffs 
+##      1
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{atm2\_df }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{ACF}\NormalTok{(ATM2, }\AttributeTok{lag\_max =} \DecValTok{30}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{autoplot}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{DATA624_Project1_files/figure-latex/unnamed-chunk-27-1.pdf}
+
+The approach with ATM2 is a rinse and repeat but in this case
+differencing is needed and achieved with the below code
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{atm2\_df }\OtherTok{\textless{}{-}}\NormalTok{ atm2\_df }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{diff\_ATM2=} \FunctionTok{difference}\NormalTok{(ATM2))}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{arima-1}{%
+\paragraph{ARIMA}\label{arima-1}}
+
+Below we again filter out data and identify our best model but include
+both differenced and non-differenced data.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{atm2\_train }\OtherTok{\textless{}{-}}\NormalTok{ atm2\_df }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(DATE }\SpecialCharTok{\textless{}=} \StringTok{"2010{-}04{-}01"}\NormalTok{)}
+
+\CommentTok{\#run seasonal related models without the differenced data}
+\NormalTok{atm2\_fit\_nondiff }\OtherTok{\textless{}{-}}\NormalTok{ atm2\_train }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{model}\NormalTok{(}
+    \AttributeTok{SNAIVE =} \FunctionTok{SNAIVE}\NormalTok{(ATM2),}
+    \AttributeTok{ETS =} \FunctionTok{ETS}\NormalTok{(ATM2),}
+\NormalTok{  )}
+
+\CommentTok{\#run models with differenced data}
+\NormalTok{atm2\_fit\_diff }\OtherTok{\textless{}{-}}\NormalTok{ atm2\_train }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{slice}\NormalTok{(}\DecValTok{2}\SpecialCharTok{:}\DecValTok{336}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{model}\NormalTok{(}
+    \AttributeTok{ETS\_diff =} \FunctionTok{ETS}\NormalTok{(diff\_ATM2),}
+    \AttributeTok{ARIMA =} \FunctionTok{ARIMA}\NormalTok{(diff\_ATM2),}
+   \StringTok{\textasciigrave{}}\AttributeTok{Auto ARIMA}\StringTok{\textasciigrave{}} \OtherTok{=} \FunctionTok{ARIMA}\NormalTok{(diff\_ATM2, }\AttributeTok{stepwise =} \ConstantTok{FALSE}\NormalTok{, }\AttributeTok{approx =} \ConstantTok{FALSE}\NormalTok{)}
+\NormalTok{  )}
+
+\CommentTok{\#forecast\_ATM2 April}
+\NormalTok{atm2\_forecast\_nondiff }\OtherTok{\textless{}{-}}\NormalTok{ atm2\_fit\_nondiff }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{forecast}\NormalTok{(}\AttributeTok{h =} \DecValTok{30}\NormalTok{)}
+
+\CommentTok{\#forecast\_ATM2 April}
+\NormalTok{atm2\_\_forecast\_diff }\OtherTok{\textless{}{-}}\NormalTok{ atm2\_fit\_diff }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{forecast}\NormalTok{(}\AttributeTok{h =} \DecValTok{30}\NormalTok{)}
+
+\CommentTok{\#plot}
+\NormalTok{atm2\_forecast\_nondiff }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{autoplot}\NormalTok{(atm2\_df, }\AttributeTok{level =} \ConstantTok{NULL}\NormalTok{)}\SpecialCharTok{+}
+  \FunctionTok{facet\_wrap}\NormalTok{( }\SpecialCharTok{\textasciitilde{}}\NormalTok{ .model, }\AttributeTok{scales =} \StringTok{"free\_y"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{guides}\NormalTok{(}\AttributeTok{colour =} \FunctionTok{guide\_legend}\NormalTok{(}\AttributeTok{title =} \StringTok{"Forecast"}\NormalTok{))}\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title=} \StringTok{"ATM2 Forecasts | April"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{xlab}\NormalTok{(}\StringTok{"Date"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{ylab}\NormalTok{(}\StringTok{"$$$ (In Hundreds)"}\NormalTok{) }
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{DATA624_Project1_files/figure-latex/unnamed-chunk-29-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#plot 2}
+\NormalTok{atm2\_\_forecast\_diff }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{autoplot}\NormalTok{(atm2\_df, }\AttributeTok{level =} \ConstantTok{NULL}\NormalTok{)}\SpecialCharTok{+}
+  \FunctionTok{facet\_wrap}\NormalTok{( }\SpecialCharTok{\textasciitilde{}}\NormalTok{ .model, }\AttributeTok{scales =} \StringTok{"free\_y"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{guides}\NormalTok{(}\AttributeTok{colour =} \FunctionTok{guide\_legend}\NormalTok{(}\AttributeTok{title =} \StringTok{"Forecast"}\NormalTok{))}\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title=} \StringTok{"ATM2 Forecasts | April"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{xlab}\NormalTok{(}\StringTok{"Date"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{ylab}\NormalTok{(}\StringTok{"Cash"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{DATA624_Project1_files/figure-latex/unnamed-chunk-29-2.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{accuracy}\NormalTok{(atm2\_forecast\_nondiff, atm2\_df) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{select}\NormalTok{(.model, RMSE}\SpecialCharTok{:}\NormalTok{MAPE)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 2 x 5
+##   .model  RMSE   MAE   MPE  MAPE
+##   <chr>  <dbl> <dbl> <dbl> <dbl>
+## 1 ETS     19.0  13.7 -29.3  59.4
+## 2 SNAIVE  26.0  16.9  32.3  45.6
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{accuracy}\NormalTok{(atm2\_\_forecast\_diff, atm2\_df) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{select}\NormalTok{(.model, RMSE}\SpecialCharTok{:}\NormalTok{MAPE)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 3 x 5
+##   .model      RMSE   MAE   MPE  MAPE
+##   <chr>      <dbl> <dbl> <dbl> <dbl>
+## 1 ARIMA       26.2  19.5  228.  239.
+## 2 Auto ARIMA  25.2  19.1  234.  242.
+## 3 ETS_diff    25.0  19.1  220.  229.
+\end{verbatim}
+
+Among the reuslts, the non-difference ETS model had the lowest RMSE \&
+MAE, and MPE \& MAPE closest to zero, making it the optimal choice.
+
+\hypertarget{forecast-1}{%
+\paragraph{Forecast}\label{forecast-1}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{atm2\_fit\_ets }\OtherTok{\textless{}{-}}\NormalTok{ atm2\_df }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{model}\NormalTok{(}
+    \AttributeTok{ETS =} \FunctionTok{ETS}\NormalTok{(ATM2))}
+
+\CommentTok{\#generate the values}
+\NormalTok{atm2\_forecast\_ets }\OtherTok{\textless{}{-}}\NormalTok{ atm2\_fit\_ets }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{forecast}\NormalTok{(}\AttributeTok{h=}\DecValTok{30}\NormalTok{)}
+
+\CommentTok{\#plot}
+\NormalTok{atm2\_forecast\_ets }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{autoplot}\NormalTok{(atm2\_df) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"ATM2 {-} ETS Forecast | May 2010"}\NormalTok{,}
+       \AttributeTok{y =} \StringTok{"$$$ (In Hundreds)"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{DATA624_Project1_files/figure-latex/unnamed-chunk-31-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{(atm2\_forecast\_results }\OtherTok{\textless{}{-}} 
+  \FunctionTok{as.data.frame}\NormalTok{(atm2\_forecast\_ets) }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{select}\NormalTok{(DATE, .mean) }\SpecialCharTok{\%\textgreater{}\%} 
+      \FunctionTok{rename}\NormalTok{(}\AttributeTok{Date =}\NormalTok{ DATE, }\AttributeTok{Cash =}\NormalTok{ .mean)}\SpecialCharTok{\%\textgreater{}\%}
+        \FunctionTok{mutate}\NormalTok{(}\AttributeTok{Cash=}\FunctionTok{round}\NormalTok{(Cash,}\DecValTok{2}\NormalTok{)))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##          Date   Cash
+## 1  2010-05-01  68.35
+## 2  2010-05-02  74.19
+## 3  2010-05-03  11.09
+## 4  2010-05-04   2.14
+## 5  2010-05-05 101.60
+## 6  2010-05-06  92.38
+## 7  2010-05-07  68.98
+## 8  2010-05-08  68.35
+## 9  2010-05-09  74.19
+## 10 2010-05-10  11.09
+## 11 2010-05-11   2.14
+## 12 2010-05-12 101.60
+## 13 2010-05-13  92.38
+## 14 2010-05-14  68.98
+## 15 2010-05-15  68.35
+## 16 2010-05-16  74.19
+## 17 2010-05-17  11.09
+## 18 2010-05-18   2.14
+## 19 2010-05-19 101.60
+## 20 2010-05-20  92.38
+## 21 2010-05-21  68.98
+## 22 2010-05-22  68.35
+## 23 2010-05-23  74.19
+## 24 2010-05-24  11.09
+## 25 2010-05-25   2.14
+## 26 2010-05-26 101.60
+## 27 2010-05-27  92.38
+## 28 2010-05-28  68.98
+## 29 2010-05-29  68.35
+## 30 2010-05-30  74.19
+\end{verbatim}
+
+\hypertarget{atm3}{%
+\subsubsection{ATM3}\label{atm3}}
+
+ATM3 was ultimately omitted, considering the limited date range and
+skewed distributions. It can be considered when more data is provided.
+
+\hypertarget{atm4}{%
+\subsubsection{ATM4}\label{atm4}}
+
+\hypertarget{stl-decomposition-2}{%
+\paragraph{STL Decomposition}\label{stl-decomposition-2}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{atm4\_df }\OtherTok{\textless{}{-}}\NormalTok{ atm\_df }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{select}\NormalTok{(DATE, ATM4)}
+
+\NormalTok{atm4\_df }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{model}\NormalTok{(}
+    \FunctionTok{STL}\NormalTok{(ATM4 }\SpecialCharTok{\textasciitilde{}} \FunctionTok{trend}\NormalTok{(}\AttributeTok{window =} \DecValTok{7}\NormalTok{) }\SpecialCharTok{+}
+                   \FunctionTok{season}\NormalTok{(}\AttributeTok{window =} \StringTok{"periodic"}\NormalTok{),}
+    \AttributeTok{robust =} \ConstantTok{TRUE}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{components}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{autoplot}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{DATA624_Project1_files/figure-latex/unnamed-chunk-33-1.pdf}
+
+Considering the variance from the time series, I decided to tranform the
+data before forecasting using box-cox transformation
+
+\hypertarget{box-cox}{%
+\paragraph{Box-Cox}\label{box-cox}}
+
+\textbf{Reference}
+
+\href{https://otexts.com/fpp3/transformations.html}{Forecasting
+Principles and Practice}
+
+\begin{verbatim}
+      lambda <- aus_production |>
+        features(Gas, features = guerrero) |>
+        pull(lambda_guerrero)
+      aus_production |>
+        autoplot(box_cox(Gas, lambda)) +
+        labs(y = "",
+             title = latex2exp::TeX(paste0(
+               "Transformed gas production with $\\lambda$ = ",
+               round(lambda,2))))
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{(atm4\_lambda }\OtherTok{\textless{}{-}}\NormalTok{ atm4\_df }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{features}\NormalTok{(ATM4, }\AttributeTok{features =}\NormalTok{ guerrero) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{pull}\NormalTok{(lambda\_guerrero))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] -0.0737252
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{atm4\_transformed }\OtherTok{\textless{}{-}} \FunctionTok{BoxCox}\NormalTok{(atm4\_df}\SpecialCharTok{$}\NormalTok{ATM4, }\AttributeTok{lambda =}\NormalTok{ atm4\_lambda)}
+
+\CommentTok{\# Extract the transformed data}
+
+\NormalTok{atm4\_df}\SpecialCharTok{$}\NormalTok{ATM4\_T}\OtherTok{\textless{}{-}}\NormalTok{atm4\_transformed}
+
+\CommentTok{\#plot}
+\NormalTok{atm4\_df}\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{autoplot}\NormalTok{(ATM4\_T) }
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{DATA624_Project1_files/figure-latex/unnamed-chunk-35-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ndiffs}\NormalTok{(atm4\_df}\SpecialCharTok{$}\NormalTok{ATM4)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ndiffs}\NormalTok{(atm4\_df}\SpecialCharTok{$}\NormalTok{ATM4\_T)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{atm4\_df }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{ACF}\NormalTok{(ATM4\_T, }\AttributeTok{lag\_max =} \DecValTok{28}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{autoplot}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{DATA624_Project1_files/figure-latex/unnamed-chunk-37-1.pdf}
+
+Using ndiff() we identify that theres no need for differencing, and the
+ACF shows
+
+The ACF plot below suggest lags 7 consistently and on 2 other occasions
+in different periods. Despite the ndiff() function resulting in 0, if
+believe this does require differencing using the transformed data.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{atm4\_df }\OtherTok{\textless{}{-}}\NormalTok{ atm4\_df }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{diff\_ATM4=} \FunctionTok{difference}\NormalTok{(ATM4\_T))}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{arima-2}{%
+\paragraph{ARIMA}\label{arima-2}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{atm4\_train }\OtherTok{\textless{}{-}}\NormalTok{ atm4\_df }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(DATE }\SpecialCharTok{\textless{}=} \StringTok{"2010{-}04{-}01"}\NormalTok{)}
+
+\CommentTok{\#run seasonal related models without the differenced data}
+\NormalTok{atm4\_fit\_nondiff }\OtherTok{\textless{}{-}}\NormalTok{ atm4\_train }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{model}\NormalTok{(}
+    \AttributeTok{SNAIVE =} \FunctionTok{SNAIVE}\NormalTok{(ATM4\_T),}
+    \AttributeTok{ETS =} \FunctionTok{ETS}\NormalTok{(ATM4\_T),}
+\NormalTok{  )}
+
+\CommentTok{\#run models with differenced data}
+\NormalTok{atm4\_fit\_diff }\OtherTok{\textless{}{-}}\NormalTok{ atm4\_train }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{slice}\NormalTok{(}\DecValTok{2}\SpecialCharTok{:}\DecValTok{336}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{model}\NormalTok{(}
+    \AttributeTok{ETS\_diff =} \FunctionTok{ETS}\NormalTok{(diff\_ATM4),}
+    \AttributeTok{ARIMA =} \FunctionTok{ARIMA}\NormalTok{(diff\_ATM4),}
+   \StringTok{\textasciigrave{}}\AttributeTok{Auto ARIMA}\StringTok{\textasciigrave{}} \OtherTok{=} \FunctionTok{ARIMA}\NormalTok{(diff\_ATM4, }\AttributeTok{stepwise =} \ConstantTok{FALSE}\NormalTok{, }\AttributeTok{approx =} \ConstantTok{FALSE}\NormalTok{)}
+\NormalTok{  )}
+
+\CommentTok{\#forecast\_ATM2 April}
+\NormalTok{atm4\_forecast\_nondiff }\OtherTok{\textless{}{-}}\NormalTok{ atm4\_fit\_nondiff }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{forecast}\NormalTok{(}\AttributeTok{h =} \DecValTok{30}\NormalTok{)}
+
+\CommentTok{\#forecast\_ATM2 April}
+\NormalTok{atm4\_\_forecast\_diff }\OtherTok{\textless{}{-}}\NormalTok{ atm4\_fit\_diff }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{forecast}\NormalTok{(}\AttributeTok{h =} \DecValTok{30}\NormalTok{)}
+
+\CommentTok{\#plot}
+\NormalTok{atm4\_forecast\_nondiff }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{autoplot}\NormalTok{(atm4\_df, }\AttributeTok{level =} \ConstantTok{NULL}\NormalTok{)}\SpecialCharTok{+}
+  \FunctionTok{facet\_wrap}\NormalTok{( }\SpecialCharTok{\textasciitilde{}}\NormalTok{ .model, }\AttributeTok{scales =} \StringTok{"free\_y"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{guides}\NormalTok{(}\AttributeTok{colour =} \FunctionTok{guide\_legend}\NormalTok{(}\AttributeTok{title =} \StringTok{"Forecast"}\NormalTok{))}\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title=} \StringTok{"ATM4 Forecasts | April"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{xlab}\NormalTok{(}\StringTok{"Date"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{ylab}\NormalTok{(}\StringTok{"$$$ (In Hundreds)"}\NormalTok{) }
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{DATA624_Project1_files/figure-latex/unnamed-chunk-39-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#plot 2}
+\NormalTok{atm4\_\_forecast\_diff }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{autoplot}\NormalTok{(atm4\_df, }\AttributeTok{level =} \ConstantTok{NULL}\NormalTok{)}\SpecialCharTok{+}
+  \FunctionTok{facet\_wrap}\NormalTok{( }\SpecialCharTok{\textasciitilde{}}\NormalTok{ .model, }\AttributeTok{scales =} \StringTok{"free\_y"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{guides}\NormalTok{(}\AttributeTok{colour =} \FunctionTok{guide\_legend}\NormalTok{(}\AttributeTok{title =} \StringTok{"Forecast"}\NormalTok{))}\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title=} \StringTok{"ATM4 Forecasts | April"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{xlab}\NormalTok{(}\StringTok{"Date"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{ylab}\NormalTok{(}\StringTok{"Cash"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{DATA624_Project1_files/figure-latex/unnamed-chunk-39-2.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{accuracy}\NormalTok{(atm4\_forecast\_nondiff, atm4\_df) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{select}\NormalTok{(.model, RMSE}\SpecialCharTok{:}\NormalTok{MAPE)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 2 x 5
+##   .model  RMSE   MAE   MPE  MAPE
+##   <chr>  <dbl> <dbl> <dbl> <dbl>
+## 1 ETS    1.07  0.740 -22.3  32.8
+## 2 SNAIVE 0.861 0.510 -19.5  22.7
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{accuracy}\NormalTok{(atm4\_\_forecast\_diff, atm4\_df) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{select}\NormalTok{(.model, RMSE}\SpecialCharTok{:}\NormalTok{MAPE)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 3 x 5
+##   .model      RMSE   MAE   MPE  MAPE
+##   <chr>      <dbl> <dbl> <dbl> <dbl>
+## 1 ARIMA       1.64  1.26 104.   104.
+## 2 Auto ARIMA  1.66  1.26 103.   103.
+## 3 ETS_diff    1.73  1.33  21.7  184.
+\end{verbatim}
+
+Of the models, SNAIVE for non differenced data was the most accurate so
+I will proceed with this.
+
+\hypertarget{forecast-2}{%
+\paragraph{Forecast}\label{forecast-2}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{atm4\_fit\_snaive }\OtherTok{\textless{}{-}}\NormalTok{ atm4\_df }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{model}\NormalTok{(}
+    \AttributeTok{SNAIVE =} \FunctionTok{SNAIVE}\NormalTok{(ATM4\_T))}
+
+\CommentTok{\#generate the values}
+\NormalTok{atm4\_forecast\_snaive }\OtherTok{\textless{}{-}}\NormalTok{ atm4\_fit\_snaive }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{forecast}\NormalTok{(}\AttributeTok{h=}\DecValTok{30}\NormalTok{)}
+
+\CommentTok{\#plot}
+\NormalTok{atm4\_forecast\_snaive }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{autoplot}\NormalTok{(atm4\_df) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"ATM2 {-} SNAIVE Forecast | May 2010"}\NormalTok{,}
+       \AttributeTok{y =} \StringTok{"$$$ (In Hundreds)"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{DATA624_Project1_files/figure-latex/unnamed-chunk-41-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{(atm4\_forecast\_results }\OtherTok{\textless{}{-}} 
+  \FunctionTok{as.data.frame}\NormalTok{(atm4\_forecast\_snaive) }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{select}\NormalTok{(DATE, .mean) }\SpecialCharTok{\%\textgreater{}\%} 
+      \FunctionTok{rename}\NormalTok{(}\AttributeTok{Date =}\NormalTok{ DATE, }\AttributeTok{Cash =}\NormalTok{ .mean)}\SpecialCharTok{\%\textgreater{}\%}
+        \FunctionTok{mutate}\NormalTok{(}\AttributeTok{Cash=}\FunctionTok{round}\NormalTok{(Cash,}\DecValTok{2}\NormalTok{)))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##          Date Cash
+## 1  2010-05-01 1.59
+## 2  2010-05-02 5.04
+## 3  2010-05-03 4.85
+## 4  2010-05-04 2.38
+## 5  2010-05-05 4.75
+## 6  2010-05-06 3.31
+## 7  2010-05-07 4.96
+## 8  2010-05-08 1.59
+## 9  2010-05-09 5.04
+## 10 2010-05-10 4.85
+## 11 2010-05-11 2.38
+## 12 2010-05-12 4.75
+## 13 2010-05-13 3.31
+## 14 2010-05-14 4.96
+## 15 2010-05-15 1.59
+## 16 2010-05-16 5.04
+## 17 2010-05-17 4.85
+## 18 2010-05-18 2.38
+## 19 2010-05-19 4.75
+## 20 2010-05-20 3.31
+## 21 2010-05-21 4.96
+## 22 2010-05-22 1.59
+## 23 2010-05-23 5.04
+## 24 2010-05-24 4.85
+## 25 2010-05-25 2.38
+## 26 2010-05-26 4.75
+## 27 2010-05-27 3.31
+## 28 2010-05-28 4.96
+## 29 2010-05-29 1.59
+## 30 2010-05-30 5.04
+\end{verbatim}
+
+\hypertarget{part-b-1}{%
+\section{Part B}\label{part-b-1}}
+
+\hypertarget{eda-cleanup-1}{%
+\subsection{EDA \& Cleanup}\label{eda-cleanup-1}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{str}\NormalTok{(power\_raw)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## tibble [192 x 3] (S3: tbl_df/tbl/data.frame)
+##  $ CaseSequence: num [1:192] 733 734 735 736 737 738 739 740 741 742 ...
+##  $ YYYY-MMM    : chr [1:192] "1998-Jan" "1998-Feb" "1998-Mar" "1998-Apr" ...
+##  $ KWH         : num [1:192] 6862583 5838198 5420658 5010364 4665377 ...
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{describe}\NormalTok{(power\_raw)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##              vars   n      mean         sd    median   trimmed        mad
+## CaseSequence    1 192     828.5      55.57     828.5     828.5      71.16
+## YYYY-MMM*       2 192      96.5      55.57      96.5      96.5      71.16
+## KWH             3 191 6502474.6 1447570.89 6283324.0 6439474.9 1543073.77
+##                 min      max   range skew kurtosis        se
+## CaseSequence    733      924     191 0.00    -1.22      4.01
+## YYYY-MMM*         1      192     191 0.00    -1.22      4.01
+## KWH          770523 10655730 9885207 0.17     0.45 104742.55
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{data.frame}\NormalTok{(power\_raw}\SpecialCharTok{$}\StringTok{\textasciigrave{}}\AttributeTok{YYYY{-}MMM}\StringTok{\textasciigrave{}}\NormalTok{[power\_raw}\SpecialCharTok{$}\NormalTok{KWH }\SpecialCharTok{\%in\%} \ConstantTok{NA}\NormalTok{])}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   power_raw..YYYY.MMM..power_raw.KWH..in..NA.
+## 1                                    2008-Sep
+\end{verbatim}
+
+I renamed the \texttt{YYYY-MMM} for preference to \texttt{DATE}. The
+cleanup is a change of type for \texttt{DATE}, removal of
+\texttt{CaseSequence} as it does not help our model, and reducing our
+model to values in the thousands for ease of analysis. Like before we'll
+also be indexing by DATE
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#change variable type }
+\NormalTok{power\_df }\OtherTok{\textless{}{-}}\NormalTok{ power\_raw }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{DATE =} \FunctionTok{yearmonth}\NormalTok{(}\StringTok{\textasciigrave{}}\AttributeTok{YYYY{-}MMM}\StringTok{\textasciigrave{}}\NormalTok{), }\AttributeTok{KWH =}\NormalTok{ KWH}\SpecialCharTok{/}\DecValTok{1000}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{select}\NormalTok{(}\SpecialCharTok{{-}}\NormalTok{CaseSequence, }\SpecialCharTok{{-}}\StringTok{\textquotesingle{}YYYY{-}MMM\textquotesingle{}}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{tsibble}\NormalTok{(}\AttributeTok{index=}\NormalTok{ DATE)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{head}\NormalTok{(power\_df)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tsibble: 6 x 2 [1M]
+##     KWH     DATE
+##   <dbl>    <mth>
+## 1 6863. 1998 Jan
+## 2 5838. 1998 Feb
+## 3 5421. 1998 Mar
+## 4 5010. 1998 Apr
+## 5 4665. 1998 May
+## 6 6467. 1998 Jun
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ggplot}\NormalTok{(power\_df, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x=}\NormalTok{KWH))}\SpecialCharTok{+}
+  \FunctionTok{geom\_histogram}\NormalTok{(}\AttributeTok{bins=}\DecValTok{40}\NormalTok{)}\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Monthly Distributions Residential Power Usage | Jan \textquotesingle{}98 {-} Dec \textquotesingle{}13"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{DATA624_Project1_files/figure-latex/unnamed-chunk-48-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{power\_df }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{autoplot}\NormalTok{(KWH) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Monthly Distributions Residential Power Usage | Jan \textquotesingle{}98 {-} Dec \textquotesingle{}13"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{DATA624_Project1_files/figure-latex/unnamed-chunk-48-2.pdf}
+
+The data has an apparent outlier and is right skewed that appears in
+both plots, and resides sometime after January of 2010.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# made a copy of the data first}
+\NormalTok{power\_df2}\OtherTok{\textless{}{-}}\NormalTok{power\_df}
+\NormalTok{power\_df2}\SpecialCharTok{$}\NormalTok{KWH }\OtherTok{\textless{}{-}} \FunctionTok{na.interp}\NormalTok{(power\_df2}\SpecialCharTok{$}\NormalTok{KWH)}
+\NormalTok{power\_df2}\SpecialCharTok{$}\NormalTok{KWH }\OtherTok{\textless{}{-}} \FunctionTok{replace}\NormalTok{(power\_df2}\SpecialCharTok{$}\NormalTok{KWH, power\_df2}\SpecialCharTok{$}\NormalTok{KWH }\SpecialCharTok{==} \FunctionTok{min}\NormalTok{(power\_df2}\SpecialCharTok{$}\NormalTok{KWH),}
+                          \FunctionTok{median}\NormalTok{(power\_df2}\SpecialCharTok{$}\NormalTok{KWH))}
+\end{Highlighting}
+\end{Shaded}
+
+Considering the distribution, I again thought it best to replace the
+missing value with the median, but considering I will be using that
+method to address the outlier, I decided to use \texttt{na.interp} since
+its a tool used by the author of our textbook Rob J Hydman's
+\href{https://github.com/robjhyndman/forecast/blob/master/man/na.interp.Rd}{github
+repo}. Regardless, the transformation below shows its still right skewed
+but shows seasonality with an upward trend.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ggplot}\NormalTok{(power\_df2, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x=}\NormalTok{KWH))}\SpecialCharTok{+}
+  \FunctionTok{geom\_histogram}\NormalTok{()}\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Monthly Distributions Residential Power Usage | Jan \textquotesingle{}98 {-} Dec \textquotesingle{}13"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{DATA624_Project1_files/figure-latex/unnamed-chunk-50-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#summary}
+\FunctionTok{summary}\NormalTok{(power\_df2}\SpecialCharTok{$}\NormalTok{KWH)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##    4313    5444    6330    6532    7609   10656
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#ts plot}
+\NormalTok{power\_df2 }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{autoplot}\NormalTok{(KWH) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Monthly Distributions Residential Power Usage | Jan \textquotesingle{}98 {-} Dec \textquotesingle{}13"}\NormalTok{)}\SpecialCharTok{+}
+  \FunctionTok{ylab}\NormalTok{(}\AttributeTok{label=} \StringTok{"KWH (Thousands)"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{DATA624_Project1_files/figure-latex/unnamed-chunk-50-2.pdf}
+
+Before forecasting I will transform the data using a Box-Cox
+transformation.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#get lambda}
+\NormalTok{(power\_lambda }\OtherTok{\textless{}{-}}\NormalTok{ power\_df2 }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{features}\NormalTok{(KWH, }\AttributeTok{features =}\NormalTok{ guerrero) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{pull}\NormalTok{(lambda\_guerrero))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] -0.2130548
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{power\_df2 }\OtherTok{\textless{}{-}}\NormalTok{ power\_df2 }\SpecialCharTok{\%\textgreater{}\%} 
+    \FunctionTok{mutate}\NormalTok{(}\AttributeTok{KWH\_bc =} \FunctionTok{box\_cox}\NormalTok{(KWH, power\_lambda))}
+
+
+\FunctionTok{summary}\NormalTok{(power\_df2}\SpecialCharTok{$}\NormalTok{KWH\_bc)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   3.905   3.943   3.967   3.967   3.994   4.043
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ggplot}\NormalTok{(power\_df2, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x=}\NormalTok{KWH\_bc))}\SpecialCharTok{+}
+  \FunctionTok{geom\_histogram}\NormalTok{()}\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Monthly Distributions Residential Power Usage | Jan \textquotesingle{}98 {-} Dec \textquotesingle{}13"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Don't know how to automatically pick scale for object of type <ts>. Defaulting
+## to continuous.
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+\end{verbatim}
+
+\includegraphics{DATA624_Project1_files/figure-latex/unnamed-chunk-53-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{power\_df2 }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{autoplot}\NormalTok{(KWH\_bc) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{y =} \StringTok{"KWH in Thousands"}\NormalTok{,}
+       \AttributeTok{title =} \StringTok{"Transformed KWH with Lambda = {-}0.2130548"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Don't know how to automatically pick scale for object of type <ts>. Defaulting
+## to continuous.
+\end{verbatim}
+
+\includegraphics{DATA624_Project1_files/figure-latex/unnamed-chunk-53-2.pdf}
+
+\hypertarget{stl-decomposition-3}{%
+\subsection{STL Decomposition}\label{stl-decomposition-3}}
+
+\begin{itemize}
+\tightlist
+\item
+  STL decomposition again used to identify seasonality, variance, etc.
+\item
+  ndiff() and ACF will identify if differencing is needed.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{power\_df2 }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{model}\NormalTok{(}
+    \FunctionTok{STL}\NormalTok{(KWH\_bc }\SpecialCharTok{\textasciitilde{}} \FunctionTok{trend}\NormalTok{(}\AttributeTok{window =} \DecValTok{13}\NormalTok{) }\SpecialCharTok{+}
+                   \FunctionTok{season}\NormalTok{(}\AttributeTok{window =} \StringTok{"periodic"}\NormalTok{),}
+                      \AttributeTok{robust =} \ConstantTok{TRUE}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}
+                        \FunctionTok{components}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%}
+                            \FunctionTok{autoplot}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{DATA624_Project1_files/figure-latex/unnamed-chunk-54-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ndiffs}\NormalTok{(power\_df2}\SpecialCharTok{$}\NormalTok{KWH\_bc)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 1
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{power\_df2 }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{ACF}\NormalTok{(KWH\_bc, }\AttributeTok{lag\_max =} \DecValTok{36}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{autoplot}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{DATA624_Project1_files/figure-latex/unnamed-chunk-56-1.pdf}
+
+Differencing is needed.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{diff\_power }\OtherTok{\textless{}{-}}\NormalTok{ power\_df2 }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{diff\_KWH=} \FunctionTok{difference}\NormalTok{(KWH), }\AttributeTok{diff\_KWH\_bc =} \FunctionTok{difference}\NormalTok{(KWH\_bc))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{itemize}
+\tightlist
+\item
+  Differencing created
+\item
+  NA and some columns need removal
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{diff\_power}\OtherTok{\textless{}{-}}\NormalTok{diff\_power}\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{select}\NormalTok{(}\SpecialCharTok{{-}}\NormalTok{KWH, }\SpecialCharTok{{-}}\NormalTok{KWH\_bc)}\SpecialCharTok{\%\textgreater{}\%}
+                        \FunctionTok{slice}\NormalTok{(}\SpecialCharTok{{-}}\DecValTok{1}\NormalTok{)}
+
+\FunctionTok{ndiffs}\NormalTok{(diff\_power}\SpecialCharTok{$}\NormalTok{diff\_KWH\_bc)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0
+\end{verbatim}
+
+\hypertarget{forecast-3}{%
+\subsection{Forecast}\label{forecast-3}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#Differenced data for arima}
+
+\CommentTok{\#split}
+\NormalTok{power\_train\_diff }\OtherTok{\textless{}{-}}\NormalTok{ diff\_power }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{filter}\NormalTok{(}\FunctionTok{year}\NormalTok{(DATE) }\SpecialCharTok{\textless{}} \DecValTok{2013}\NormalTok{)}
+
+\CommentTok{\#models}
+\NormalTok{power\_fit\_diff }\OtherTok{\textless{}{-}}\NormalTok{ power\_train\_diff }\SpecialCharTok{\%\textgreater{}\%} 
+    \FunctionTok{model}\NormalTok{(}
+    \AttributeTok{ARIMA =} \FunctionTok{ARIMA}\NormalTok{(diff\_KWH),}
+    \StringTok{\textasciigrave{}}\AttributeTok{Auto ARIMA}\StringTok{\textasciigrave{}} \OtherTok{=} \FunctionTok{ARIMA}\NormalTok{(diff\_KWH, }\AttributeTok{stepwise =} \ConstantTok{FALSE}\NormalTok{, }\AttributeTok{approx =} \ConstantTok{FALSE}\NormalTok{)}
+\NormalTok{  )}
+
+\CommentTok{\#forecast of 2013}
+\NormalTok{power\_forecast\_diff }\OtherTok{\textless{}{-}}\NormalTok{ power\_fit\_diff }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{forecast}\NormalTok{(}\AttributeTok{h =} \StringTok{"1 year"}\NormalTok{)}
+
+\CommentTok{\#plot}
+\NormalTok{power\_forecast\_diff }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{autoplot}\NormalTok{(diff\_power, }\AttributeTok{level =} \ConstantTok{NULL}\NormalTok{)}\SpecialCharTok{+}
+  \FunctionTok{facet\_wrap}\NormalTok{( }\SpecialCharTok{\textasciitilde{}}\NormalTok{ .model, }\AttributeTok{scales =} \StringTok{"free\_y"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{guides}\NormalTok{(}\AttributeTok{colour =} \FunctionTok{guide\_legend}\NormalTok{(}\AttributeTok{title =} \StringTok{"Forecast"}\NormalTok{))}\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title=} \StringTok{"KWH Forecasts | Jan \textquotesingle{}13 {-} Dec \textquotesingle{}13"}\NormalTok{)}\SpecialCharTok{+}
+  \FunctionTok{xlab}\NormalTok{(}\StringTok{"Month"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{ylab}\NormalTok{(}\StringTok{"KWH in Thousands"}\NormalTok{) }
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{DATA624_Project1_files/figure-latex/unnamed-chunk-59-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#split}
+\NormalTok{power\_train }\OtherTok{\textless{}{-}}\NormalTok{ power\_df2 }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{filter}\NormalTok{(}\FunctionTok{year}\NormalTok{(DATE) }\SpecialCharTok{\textless{}} \DecValTok{2013}\NormalTok{)}
+
+\CommentTok{\#models}
+\NormalTok{power\_fit }\OtherTok{\textless{}{-}}\NormalTok{ power\_train }\SpecialCharTok{\%\textgreater{}\%} 
+    \FunctionTok{model}\NormalTok{(}
+    \AttributeTok{ETS =} \FunctionTok{ETS}\NormalTok{(KWH),}
+    \StringTok{\textasciigrave{}}\AttributeTok{Additive ETS}\StringTok{\textasciigrave{}} \OtherTok{=} \FunctionTok{ETS}\NormalTok{(KWH }\SpecialCharTok{\textasciitilde{}} \FunctionTok{error}\NormalTok{(}\StringTok{"A"}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{trend}\NormalTok{(}\StringTok{"A"}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{season}\NormalTok{(}\StringTok{"A"}\NormalTok{)),}
+    \AttributeTok{SNAIVE =} \FunctionTok{SNAIVE}\NormalTok{(KWH)}
+\NormalTok{  )}
+
+\CommentTok{\#forecast of 2013}
+\NormalTok{power\_forecast }\OtherTok{\textless{}{-}}\NormalTok{ power\_fit }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{forecast}\NormalTok{(}\AttributeTok{h =} \StringTok{"1 year"}\NormalTok{)}
+
+\CommentTok{\#plot}
+\NormalTok{power\_forecast }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{autoplot}\NormalTok{(power\_df2, }\AttributeTok{level =} \ConstantTok{NULL}\NormalTok{)}\SpecialCharTok{+}
+  \FunctionTok{facet\_wrap}\NormalTok{( }\SpecialCharTok{\textasciitilde{}}\NormalTok{ .model, }\AttributeTok{scales =} \StringTok{"free\_y"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{guides}\NormalTok{(}\AttributeTok{colour =} \FunctionTok{guide\_legend}\NormalTok{(}\AttributeTok{title =} \StringTok{"Forecast"}\NormalTok{))}\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title=} \StringTok{"KWH Forecasts | Jan \textquotesingle{}13 {-} Dec \textquotesingle{}13"}\NormalTok{)}\SpecialCharTok{+}
+  \FunctionTok{xlab}\NormalTok{(}\StringTok{"Month"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{ylab}\NormalTok{(}\StringTok{"KWH in Thousands"}\NormalTok{) }
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{DATA624_Project1_files/figure-latex/unnamed-chunk-60-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#find ARIMA RMSE, MAE}
+\FunctionTok{accuracy}\NormalTok{(power\_forecast\_diff, diff\_power) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{select}\NormalTok{(.model, RMSE}\SpecialCharTok{:}\NormalTok{MAE)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 2 x 3
+##   .model      RMSE   MAE
+##   <chr>      <dbl> <dbl>
+## 1 ARIMA      1168.  774.
+## 2 Auto ARIMA 1154.  771.
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#find other RMSE, MAE}
+\FunctionTok{accuracy}\NormalTok{(power\_forecast, power\_df2) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{select}\NormalTok{(.model, RMSE}\SpecialCharTok{:}\NormalTok{MAE)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 3 x 3
+##   .model        RMSE   MAE
+##   <chr>        <dbl> <dbl>
+## 1 Additive ETS 1020.  626.
+## 2 ETS          1050.  664.
+## 3 SNAIVE       1036.  619.
+\end{verbatim}
+
+Additive ETS is the best model based on RMSE and MAE
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#reproduce the mode using the original dataset }
+\NormalTok{power\_ETS\_fit }\OtherTok{\textless{}{-}}\NormalTok{ power\_df2 }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{model}\NormalTok{(}\StringTok{\textasciigrave{}}\AttributeTok{Additive ETS}\StringTok{\textasciigrave{}} \OtherTok{=} \FunctionTok{ETS}\NormalTok{(KWH }\SpecialCharTok{\textasciitilde{}} \FunctionTok{error}\NormalTok{(}\StringTok{"A"}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{trend}\NormalTok{(}\StringTok{"A"}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{season}\NormalTok{(}\StringTok{"A"}\NormalTok{)))}
+
+\CommentTok{\#generate the values}
+\NormalTok{power\_ETS\_forecast }\OtherTok{\textless{}{-}}\NormalTok{ power\_ETS\_fit }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{forecast}\NormalTok{(}\AttributeTok{h=}\DecValTok{12}\NormalTok{)}
+
+\CommentTok{\#plot}
+\NormalTok{power\_ETS\_forecast }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{autoplot}\NormalTok{(power\_df2) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Monthly Residential Power Usage (Additive ETS |2024)"}\NormalTok{,}
+       \AttributeTok{y =} \StringTok{"KWH in Thousands"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{DATA624_Project1_files/figure-latex/unnamed-chunk-62-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{(power\_forecast\_results }\OtherTok{\textless{}{-}} 
+  \FunctionTok{as.data.frame}\NormalTok{(power\_ETS\_forecast) }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{select}\NormalTok{(DATE, .mean) }\SpecialCharTok{\%\textgreater{}\%} 
+      \FunctionTok{rename}\NormalTok{(}\StringTok{\textquotesingle{}KWH Forecast\textquotesingle{}} \OtherTok{=}\NormalTok{ .mean))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##        DATE KWH Forecast
+## 1  2014 Jan     9039.733
+## 2  2014 Feb     8098.821
+## 3  2014 Mar     7089.265
+## 4  2014 Apr     6405.892
+## 5  2014 May     6155.882
+## 6  2014 Jun     7622.841
+## 7  2014 Jul     8871.033
+## 8  2014 Aug     9395.556
+## 9  2014 Sep     8757.208
+## 10 2014 Oct     6798.997
+## 11 2014 Nov     6048.011
+## 12 2014 Dec     7325.489
+\end{verbatim}
+
+\end{document}

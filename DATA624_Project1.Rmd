@@ -698,6 +698,8 @@ power_df2 %>%
 
 ## STL Decomposition
 
+* STL decomposition again used to identify seasonality, variance, etc.
+* ndiff() and ACF will identify if differencing is needed.
 
 ```{r}
 power_df2 %>%
@@ -729,7 +731,8 @@ diff_power <- power_df2 %>%
   
 ```
 
-Differencing created an NA and some columns need removal
+* Differencing created
+* NA and some columns need removal
 
 ```{r}
 diff_power<-diff_power%>%
@@ -739,16 +742,17 @@ diff_power<-diff_power%>%
 ndiffs(diff_power$diff_KWH_bc)
 ```
 
+## Forecast
 
 ```{r fig.height=10, fig.width=15, message=FALSE, warning=FALSE}
 #Differenced data for arima
 
 #split
-power_train <- diff_power %>% 
+power_train_diff <- diff_power %>% 
   filter(year(DATE) < 2013)
 
 #models
-power_fit_diff <- power_train %>% 
+power_fit_diff <- power_train_diff %>% 
     model(
     ARIMA = ARIMA(diff_KWH),
     `Auto ARIMA` = ARIMA(diff_KWH, stepwise = FALSE, approx = FALSE)
@@ -763,8 +767,73 @@ power_forecast_diff %>%
   autoplot(diff_power, level = NULL)+
   facet_wrap( ~ .model, scales = "free_y") +
   guides(colour = guide_legend(title = "Forecast"))+
-  labs(title= "KWH Forecasts",
-       subtitle = "Jan '13 - Dec '13")+
+  labs(title= "KWH Forecasts | Jan '13 - Dec '13")+
   xlab("Month") +
   ylab("KWH in Thousands") 
+```
+
+
+```{r fig.height=10, fig.width=15, message=FALSE, warning=FALSE}
+#split
+power_train <- power_df2 %>% 
+  filter(year(DATE) < 2013)
+
+#models
+power_fit <- power_train %>% 
+    model(
+    ETS = ETS(KWH),
+    `Additive ETS` = ETS(KWH ~ error("A") + trend("A") + season("A")),
+    SNAIVE = SNAIVE(KWH)
+  )
+
+#forecast of 2013
+power_forecast <- power_fit %>% 
+  forecast(h = "1 year")
+
+#plot
+power_forecast %>%
+  autoplot(power_df2, level = NULL)+
+  facet_wrap( ~ .model, scales = "free_y") +
+  guides(colour = guide_legend(title = "Forecast"))+
+  labs(title= "KWH Forecasts | Jan '13 - Dec '13")+
+  xlab("Month") +
+  ylab("KWH in Thousands") 
+```
+
+
+```{r}
+#find ARIMA RMSE, MAE
+accuracy(power_forecast_diff, diff_power) %>%
+  select(.model, RMSE:MAE)
+
+#find other RMSE, MAE
+accuracy(power_forecast, power_df2) %>%
+  select(.model, RMSE:MAE)
+```
+
+Additive ETS is the best model based on RMSE and MAE
+
+```{r}
+#reproduce the mode using the original dataset 
+power_ETS_fit <- power_df2 %>% 
+  model(`Additive ETS` = ETS(KWH ~ error("A") + trend("A") + season("A")))
+
+#generate the values
+power_ETS_forecast <- power_ETS_fit %>% 
+  forecast(h=12)
+
+#plot
+power_ETS_forecast %>% 
+  autoplot(power_df2) +
+  labs(title = "Monthly Residential Power Usage (Additive ETS |2024)",
+       y = "KWH in Thousands")
+       
+```
+
+
+```{r}
+(power_forecast_results <- 
+  as.data.frame(power_ETS_forecast) %>%
+    select(DATE, .mean) %>% 
+      rename('KWH Forecast' = .mean))
 ```
