@@ -1,0 +1,288 @@
+---
+title: 'DATA 624: PREDICTIVE ANALYTICS HW 8'
+author: "Gabriel Campos"
+date: "Last edited `r format(Sys.time(), '%B %d, %Y')`"
+output:
+  html_notebook: default
+  geometry: left=0.5cm,right=0.5cm,top=1cm,bottom=2cm
+  html_document:
+    df_print: paged
+  pdf_document:
+    latex_engine: xelatex
+urlcolor: blue
+---
+
+# Library
+
+```{r, warning=FALSE}
+library(AppliedPredictiveModeling)
+library(caret)
+library(corrplot)
+library(earth)
+library(fpp3)
+library(dplyr)
+library(ggplot2)
+library(mlbench)
+library(RANN)
+library(tidyr)
+```
+
+# Description
+
+Do problems 7.2 and 7.5 in Kuhn and Johnson. There are only two but they have many parts. Please submit both a link to your Rpubs and the .rmd file.
+
+# 7.2
+
+Friedman (1991) introduced several benchmark data sets create by simulation One of these simulations used the following nonlinear equation to
+create data: 
+
+$y=10sin(\pi1x_1x_2)+20(x_3-0.5)^2+10x_4+5x_5+N(0,\sigma^2)$
+
+where the *x* values are random variables uniformly distributed between [0, 1] (there are also 5 other non-informative variables also created in the simulation). The package `mlbench` contains a function called **mlbench.friedman1** that simulates these data:
+
+```{r}
+set.seed(200)
+trainingData <- mlbench.friedman1(200, sd = 1)
+## We convert the 'x' data from a matrix to a data frame
+## One reason is that this will give the columns names.
+trainingData$x <- data.frame(trainingData$x)
+## Look at the data using
+featurePlot(trainingData$x, trainingData$y)
+## or other methods.
+
+## This creates a list with a vector 'y' and a matrix
+## of predictors 'x'. Also simulate a large test set to
+## estimate the true error rate with good precision:
+testData <- mlbench.friedman1(5000, sd = 1)
+testData$x <- data.frame(testData$x)
+```
+
+
+
+## i 
+
+### Example
+
+Tune several models on these data. For example:
+
+```{r}
+knnModel <- train(x = trainingData$x,
+y = trainingData$y,
+method = "knn",
+preProc = c("center", "scale"),
+tuneLength = 10)
+knnModel
+```
+
+RMSE was used to select the optimal model using the smallest value.
+The final value used for the model was k = 19.
+
+```{r}
+knnPred <- predict(knnModel, newdata = testData$x)
+## The function 'postResample' can be used to get the test set
+## perforamnce values
+postResample(pred = knnPred, obs = testData$y)
+```
+
+### MARS & MARS TUNED
+
+#### MARS
+
+```{r}
+mars_Grid <- expand.grid(.degree = 1:2, .nprune = 2:38)
+set.seed(100)
+
+mars_Fit <- earth(trainingData$x, trainingData$y)
+
+mars_Pred <- predict(mars_Fit, newdata = testData$x)
+postResample(pred = mars_Pred, obs = testData$y)
+```
+
+#### MARS Tuned
+
+```{r}
+marsTuned_Grid <- expand.grid(.degree = 1:2, .nprune = 2:38)
+set.seed(100)
+
+marsTuned <- train(trainingData$x, trainingData$y, method = "earth",
+                   tuneGrid = marsTuned_Grid,
+                   trControl = trainControl(method = "cv"))
+
+marsTune_Pred <- predict(marsTuned, newdata = testData$x)
+postResample(pred = marsTune_Pred, obs = testData$y)
+```
+
+### SVM Tuned
+
+```{r}
+svmRTuned <- train(trainingData$x, trainingData$y,
+                   method = "svmRadial",
+                   preProcess = c("center", "scale"),
+                   tuneLength = 15,
+                   trControl = trainControl(method = "cv"))
+
+svmPred <- predict(svmRTuned, newdata = testData$x)
+postResample(svmPred, testData$y)
+```
+
+
+## ii
+
+Which models appear to give the best performance? 
+
+MAR tuned model with an R-squared value of 0.9460 looks like its the best performing.
+
+## iii
+
+Does MARS select the informative predictors (those named X1–X5)?
+
+Yes it selects for informative predictors
+
+# 7.5
+
+Exercise 6.3 describes data for a chemical manufacturing process. Use the same data imputation, data splitting, and pre-processing steps as before and train several nonlinear regression models.
+
+## Load Data
+
+```{r}
+data(ChemicalManufacturingProcess)
+```
+
+## data imputation, data splitting & pre-processing
+
+**impute**
+
+```{r}
+imputed_df <- preProcess(ChemicalManufacturingProcess, "knnImpute")
+imputed_full_df <- predict(imputed_df, ChemicalManufacturingProcess)
+```
+
+```{r}
+val_low <- nearZeroVar(imputed_full_df)
+#remove low frequency columns using baser df[row,columns]
+chem_df <- imputed_full_df[,-val_low]
+```
+
+**split**
+
+```{r}
+chem_index <- createDataPartition(chem_df$Yield , p=.8, list=F)
+```
+
+```{r}
+chem_train <-  chem_df[chem_index,] 
+chem_test <- chem_df[-chem_index,]
+```
+
+```{r}
+chem_marsGrid <- expand.grid(.degree = 1:2, .nprune = 2:38)
+```
+
+
+## (a)
+
+Which nonlinear regression model gives the optimal resampling and test set performance?
+
+### MARS Tuned
+
+```{r}
+chem_MarsTuned <- train(Yield~. ,
+                  data = chem_train,
+                   method = "earth",
+                   tuneGrid = chem_marsGrid,
+                   trControl = trainControl(method = "cv"))
+
+chem_MarsTunePred <- predict(chem_MarsTuned,  chem_test)
+postResample(chem_MarsTunePred, chem_test$Yield)
+```
+
+### SVM Tuned
+
+```{r}
+chem_SVMTuned <- train(Yield~. ,
+                  data = chem_test,
+                   method = "svmRadial",
+                   tuneLength = 15,
+                   trControl = trainControl(method = "cv"))
+
+chem_SVMTunePred <- predict(chem_SVMTuned,  chem_test)
+postResample(chem_SVMTunePred, chem_test$Yield)
+```
+
+### KNN
+
+```{r}
+knnModel <- train(Yield~., 
+                    data = chem_test,
+                    method = "knn",
+                    preProc = c("center", "scale"), 
+                    tuneLength = 10)
+
+knnPred <- predict(knnModel,  chem_test)
+postResample(pred = knnPred, obs = chem_test$Yield)
+```
+
+### Neural Network
+
+```{r, warning=FALSE}
+nnetGrid <- expand.grid(.decay = c(0, 0.01, .1),
+                        .size = c(1:10), .bag = FALSE)
+
+nnetTune <- train(Yield~., 
+                  data = chem_train, 
+                  method = "avNNet", 
+                  tuneGrid = nnetGrid,
+                  trControl = trainControl(method = "cv"), 
+                  linout = TRUE,trace = FALSE,
+                  MaxNWts = 10 * (ncol(chem_train) + 1) + 10 + 1, 
+                  maxit = 500)
+
+```
+
+```{r}
+nnetPred <- predict(nnetTune,  chem_test)
+postResample(predict(nnetTune,  chem_test), chem_test$Yield)
+```
+
+
+
+The SVM tuned is the best performing RMSE and R squared with values of RMSE=0.09178983 , and R squared=0.99520810 
+
+
+## (b)
+
+
+Which predictors are most important in the optimal nonlinear regression model? Do either the biological or process variables dominate the list?How do the top ten important predictors compare to the top ten predictors from the optimal linear model?
+
+Of the 20 `ManufacturingProcess` predictors 12 are `BiologicalMaterial` and 8 are `ManufacturingProcess`. In the top 10, 6 are `ManufacturingProcess` in with 1rst through 3rd being `ManufacturingProcess32`, `ManufacturingProcess36`, and `ManufacturingProcess05`. 
+Although neither dominates, ManufacturingProcess does hold a greater influence overall, when compared to the ratio of optimal nonlinear vs optimal linear, in optimal linear, ManuracturingProcess importance is greater.
+
+
+```{r}
+plot(varImp(chem_SVMTuned), top=10)
+```
+
+
+## (c)
+
+Explore the relationships between the top predictors and the response for the predictors that are unique to the optimal nonlinear regression model. Do these plots reveal intuition about the biological or process predictors and their relationship with yield?
+
+* Corrplot used to explore relationship
+* Yield response variable doesn’t have strong correlations with most of the important predictors noted previously. 
+* Strongest positive correlations exist with `ManufacturingProcess32` and `ManufacturingProcess09` (0.61 and 0.50).
+* The strongest negative correlations exist with `ManufacturingProcess36` and `ManufacturingProcess13` (-0.53 and -0.50, respectively).
+* No strong correlations with Yeild and the important Biological Material predictors identified in the previous step.
+
+```{r fig.height=10, fig.width=10, message=FALSE, warning=FALSE}
+corr_vals <- chem_df %>% 
+  dplyr::select('Yield', 'ManufacturingProcess32','ManufacturingProcess36',
+         'BiologicalMaterial06','ManufacturingProcess13',
+         'BiologicalMaterial03','ManufacturingProcess17',
+         'BiologicalMaterial02','BiologicalMaterial12',
+         'ManufacturingProcess09','ManufacturingProcess31')
+
+corr_plot_vals <- cor(corr_vals)
+
+corrplot.mixed(corr_plot_vals, tl.col = 'black', tl.pos = 'lt', 
+         upper = "number", lower="circle")
+```
